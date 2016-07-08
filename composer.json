@@ -1,0 +1,55 @@
+{
+    "name": "npr/npr-one-backend-proxy",
+    "description": "A server-side proxy for interacting with the NPR One API's authorization server",
+    "version": "1.0.0",
+    "keywords": [
+        "npr",
+        "oauth",
+        "oauth2",
+        "proxy"
+    ],
+    "homepage": "http://dev.npr.org",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Jared Biehler",
+            "email": "jaredbcoding@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Nara Kasbergen",
+            "email": "nara.kasbergen@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Sarah Hersh",
+            "email": "schersh@gmail.com",
+            "role": "Documentation"
+        }
+    ],
+    "support": {
+        "email": "NPROneEnterprise@npr.org",
+        "issues": "https://github.com/nprdm/npr-one-backend-proxy-php/issues",
+        "source": "https://github.com/nprdm/npr-one-backend-proxy-php",
+        "docs": "https://github.com/nprdm/npr-one-backend-proxy-php/tree/master/docs#readme"
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "autoload": {
+        "psr-4": {
+            "NPR\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.5.0",
+        "guzzlehttp/guzzle": "~6.0",
+        "php-di/php-di": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*",
+        "phpdocumentor/phpdocumentor": "2.*",
+        "evert/phpdoc-md": "0.2.0",
+        "phly/changelog-generator": "^2.1"
+    }
+}

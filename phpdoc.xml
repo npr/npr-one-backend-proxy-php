@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+    <title>NPR One Backend Proxy Documentation</title>
+    <parser>
+        <target>build</target>
+        <encoding>utf8</encoding>
+    </parser>
+    <transformer>
+        <target>docs</target>
+    </transformer>
+    <transformations>
+        <template name="xml" />
+    </transformations>
+    <files>
+        <directory>src</directory>
+        <ignore>tests/*</ignore>
+        <ignore>examples/*</ignore>
+    </files>
+</phpdoc>
