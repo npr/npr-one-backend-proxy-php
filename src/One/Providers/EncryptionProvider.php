@@ -82,8 +82,8 @@ class EncryptionProvider implements EncryptionInterface
 
         $encrypted = base64_decode($value);
         $ivSize = openssl_cipher_iv_length($this->cipherMethod);
-        $iv = substr($encrypted, 0, $ivSize);
-        $encryptedText = substr($encrypted, $ivSize);
+        $iv = mb_substr($encrypted, 0, $ivSize, '8bit');
+        $encryptedText = mb_substr($encrypted, $ivSize, null, '8bit');
         $hashedSalt = openssl_digest($this->salt, 'sha256', true);
         $decryptedText = openssl_decrypt($encryptedText, $this->cipherMethod, $hashedSalt, OPENSSL_RAW_DATA, $iv);
 
