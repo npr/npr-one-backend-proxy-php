@@ -9,7 +9,7 @@ use NPR\One\Interfaces\EncryptionInterface;
  * A sample encryption provider, used in tandem with the SecureCookieProvider as the default implementation for
  * secure storage of refresh tokens.
  *
- * @package NPR\One\Provider
+ * @package NPR\One\Providers
  */
 class EncryptionProvider implements EncryptionInterface
 {

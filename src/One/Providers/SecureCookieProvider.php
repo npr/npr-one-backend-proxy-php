@@ -8,7 +8,7 @@ use NPR\One\Interfaces\EncryptionInterface;
 /**
  * An extension of CookieProvider that encrypts cookies before setting them and decrypts them when retrieving them
  *
- * @package NPR\One\Provider
+ * @package NPR\One\Providers
  * @codeCoverageIgnore
  */
 class SecureCookieProvider extends CookieProvider

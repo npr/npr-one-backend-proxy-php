@@ -8,7 +8,7 @@ use NPR\One\Interfaces\StorageInterface;
 /**
  * A thin wrapper around the PHP functions to get and set cookies. Useful for unit testing.
  *
- * @package NPR\One\Provider
+ * @package NPR\One\Providers
  */
 class CookieProvider implements StorageInterface
 {
