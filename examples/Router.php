@@ -5,6 +5,7 @@ use NPR\One\Controllers\AuthCodeController;
 use NPR\One\Controllers\DeviceCodeController;
 use NPR\One\Controllers\LogoutController;
 use NPR\One\Controllers\RefreshTokenController;
+use NPR\One\Exceptions\ApiException;
 use Your\Package\Here\ConfigProvider;
 use Your\Package\Here\StorageProvider;
 
@@ -114,6 +115,11 @@ Route::post('device', function ()
             'localactivation'
         ]);
     }
+    catch (ApiException $e)
+    {
+        $data = $e->getMessage();
+        $statusCode = $e->getStatusCode();
+    }
     catch (\Exception $e)
     {
         $data = $e->getMessage();
@@ -138,6 +144,11 @@ Route::post('device/poll', function ()
     try
     {
         $data = $controller->pollDeviceCodeGrant();
+    }
+    catch (ApiException $e)
+    {
+        $data = !empty($e->getBody()) ? $e->getBody() : $e->getMessage();
+        $statusCode = $e->getStatusCode();
     }
     catch (\Exception $e)
     {
@@ -164,6 +175,11 @@ Route::post('refresh', function ()
     {
         $data = $controller->generateNewAccessTokenFromRefreshToken();
     }
+    catch (ApiException $e)
+    {
+        $data = $e->getMessage();
+        $statusCode = $e->getStatusCode();
+    }
     catch (\Exception $e)
     {
         $data = $e->getMessage();
@@ -185,6 +201,11 @@ Route::post('logout', function ()
     {
         $controller->deleteAccessAndRefreshTokens($token);
         $data = ''; // there is nothing to return in the case of success; an empty string should suffice
+    }
+    catch (ApiException $e)
+    {
+        $data = $e->getMessage();
+        $statusCode = $e->getStatusCode();
     }
     catch (\Exception $e)
     {

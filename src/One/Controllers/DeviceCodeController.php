@@ -4,6 +4,7 @@ namespace NPR\One\Controllers;
 
 use GuzzleHttp\Client;
 use NPR\One\DI\DI;
+use NPR\One\Exceptions\ApiException;
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Models\DeviceCodeModel;
 
@@ -74,7 +75,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @internal
      * @param string[] $scopes
      * @return DeviceCodeModel
-     * @throws \Exception
+     * @throws ApiException
      */
     private function createDeviceCode(array $scopes)
     {
@@ -91,7 +92,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
 
         if ($response->getStatusCode() >= 400)
         {
-            throw new \Exception("Error during startDeviceCodeGrant: {$this->getResponseMessage($response)}"); // @codeCoverageIgnore
+            throw new ApiException('Error during startDeviceCodeGrant', $response); // @codeCoverageIgnore
         }
 
         $body = $response->getBody();

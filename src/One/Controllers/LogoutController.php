@@ -4,6 +4,7 @@ namespace NPR\One\Controllers;
 
 use GuzzleHttp\Client;
 use NPR\One\DI\DI;
+use NPR\One\Exceptions\ApiException;
 
 
 /**
@@ -53,7 +54,7 @@ class LogoutController extends AbstractOAuth2Controller
      * @internal
      * @param string $token
      * @param bool $isRefreshToken
-     * @throws \Exception
+     * @throws ApiException
      */
     private function revokeToken($token, $isRefreshToken = false)
     {
@@ -83,7 +84,7 @@ class LogoutController extends AbstractOAuth2Controller
 
         if ($response->getStatusCode() >= 400)
         {
-            throw new \Exception("Error during revokeToken for token $token: {$this->getResponseMessage($response)}"); // @codeCoverageIgnore
+            throw new ApiException("Error during revokeToken for token $token", $response); // @codeCoverageIgnore
         }
 
         // A successful call has no response body, so there's nothing to return!

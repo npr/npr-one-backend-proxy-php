@@ -3,6 +3,8 @@ API Index
 
 * NPR
     * NPR\One
+        * NPR\One\Exceptions
+            * [ApiException](NPR-One-Exceptions-ApiException.md)
         * NPR\One\Models
             * [JsonModel](NPR-One-Models-JsonModel.md)
             * [DeviceCodeModel](NPR-One-Models-DeviceCodeModel.md)

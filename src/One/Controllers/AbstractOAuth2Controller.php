@@ -5,6 +5,7 @@ namespace NPR\One\Controllers;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use NPR\One\DI\DI;
+use NPR\One\Exceptions\ApiException;
 use NPR\One\Interfaces\ConfigInterface;
 use NPR\One\Interfaces\EncryptionInterface;
 use NPR\One\Interfaces\StorageInterface;
@@ -209,7 +210,7 @@ abstract class AbstractOAuth2Controller
      * @param string[] $additionalParams
      * @return AccessTokenModel
      * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws ApiException
      */
     final protected function createAccessToken($grantType, $additionalParams = [])
     {
@@ -233,7 +234,7 @@ abstract class AbstractOAuth2Controller
 
         if ($response->getStatusCode() >= 400)
         {
-            throw new \Exception("Error during createAccessToken for grant $grantType: {$this->getResponseMessage($response)}"); // @codeCoverageIgnore
+            throw new ApiException("Error during createAccessToken for grant $grantType", $response); // @codeCoverageIgnore
         }
 
         $body = $response->getBody();
@@ -257,18 +258,5 @@ abstract class AbstractOAuth2Controller
         {
             $this->secureStorage->remove('refresh_token');
         }
-    }
-
-    /**
-     * Pretty print the response for inclusion in logs
-     *
-     * @internal
-     * @param Response $response
-     * @return string
-     * @codeCoverageIgnore
-     */
-    protected function getResponseMessage(Response $response)
-    {
-        return "status: {$response->getStatusCode()}, body: {$response->getBody()}";
     }
 }
