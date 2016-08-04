@@ -50,6 +50,19 @@ Returns the HTTP status code from the failed API call; should generally always b
 
 
 
+### getStatusText
+
+    string NPR\One\Exceptions\ApiException::getStatusText()
+
+Returns the HTTP status text (a.k.a. reason phrase) from the failed API call.
+
+
+
+* Visibility: **public**
+
+
+
+
 ### getBody
 
     \GuzzleHttp\Psr7\Stream NPR\One\Exceptions\ApiException::getBody()

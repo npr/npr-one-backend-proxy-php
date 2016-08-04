@@ -20,6 +20,11 @@ class ApiException extends \Exception
      */
     private $statusCode;
     /**
+     * @var string
+     * @internal
+     */
+    private $statusText;
+    /**
      * @var Stream
      * @internal
      */
@@ -37,6 +42,7 @@ class ApiException extends \Exception
         parent::__construct($message . " - status: {$response->getStatusCode()}, body: {$response->getBody()}");
 
         $this->statusCode = $response->getStatusCode();
+        $this->statusText = $response->getReasonPhrase();
         $this->body = $response->getBody();
     }
 
@@ -48,6 +54,16 @@ class ApiException extends \Exception
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * Returns the HTTP status text (a.k.a. reason phrase) from the failed API call.
+     *
+     * @return string
+     */
+    public function getStatusText()
+    {
+        return $this->statusText;
     }
 
     /**
