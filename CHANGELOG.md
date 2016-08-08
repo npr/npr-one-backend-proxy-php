@@ -1,3 +1,8 @@
+<a name="1.1.1"></a>
+# 1.1.1 (2016-08-08)
+
+Added support for Travis CI
+
 <a name="1.1.0"></a>
 # 1.1.0 (2016-08-04)
 
