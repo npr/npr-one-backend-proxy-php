@@ -1,7 +1,7 @@
 {
     "name": "npr/npr-one-backend-proxy",
     "description": "A server-side proxy for interacting with the NPR One API's authorization server",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "keywords": [
         "npr",
         "oauth",

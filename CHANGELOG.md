@@ -1,3 +1,8 @@
+<a name="1.1.2"></a>
+# 1.1.2 (2016-08-08)
+
+Added support for Coveralls
+
 <a name="1.1.1"></a>
 # 1.1.1 (2016-08-08)
 
