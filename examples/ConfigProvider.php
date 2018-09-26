@@ -37,7 +37,7 @@ class ConfigProvider implements ConfigInterface
      */
     public function getNprAuthorizationServiceHost()
     {
-        return 'https://api.npr.org';
+        return 'https://authorization.api.npr.org';
     }
 
     /**
