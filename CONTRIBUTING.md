@@ -24,19 +24,19 @@ Please note that this project has a [Code of Conduct](CODE_OF_CONDUCT.md). By pa
 
 ## Submitting Issues
 
-When you're considering [submitting an issue to our GitHub repository](https://github.com/nprdm/npr-one-backend-proxy-php/issues/new), please consider the following guidelines:
+When you're considering [submitting an issue to our GitHub repository](https://github.com/npr/npr-one-backend-proxy-php/issues/new), please consider the following guidelines:
 
 ### Got a Question or Problem?
 
-If you have questions about how to use this package, we would generally prefer that you [contact us via e-mail](mailto:NPROneEnterprise@npr.org) rather than opening a ticket. That said, if you have constructive feedback for how we can make this package better by improving the documentation, by all means, [submit an issue](https://github.com/nprdm/npr-one-backend-proxy-php/issues/new). Please be detailed about your specific pain points, so that we're clear on what aspects of the documentation should be improved.
+If you have questions about how to use this package, we would generally prefer that you [contact us via e-mail](mailto:NPROneEnterprise@npr.org) rather than opening a ticket. That said, if you have constructive feedback for how we can make this package better by improving the documentation, by all means, [submit an issue](https://github.com/npr/npr-one-backend-proxy-php/issues/new). Please be detailed about your specific pain points, so that we're clear on what aspects of the documentation should be improved.
 
 ### Found a Bug?
 
-If you find a bug in the source code or a mistake in the documentation, you can help us by [submitting an issue to our GitHub repository](https://github.com/nprdm/npr-one-backend-proxy-php/issues/new). Even better, you can submit a pull request with a fix. (Please read and follow our [Development Guidelines](#contributing-to-development) before submitting your PR.)
+If you find a bug in the source code or a mistake in the documentation, you can help us by [submitting an issue to our GitHub repository](https://github.com/npr/npr-one-backend-proxy-php/issues/new). Even better, you can submit a pull request with a fix. (Please read and follow our [Development Guidelines](#contributing-to-development) before submitting your PR.)
 
 ### Want a Feature?
 
-You can request a new feature by [submitting an issue to our GitHub repository](https://github.com/nprdm/npr-one-backend-proxy-php/issues/new). Even if the feature is small and you are able to submit a pull request to implement it yourself, we would prefer to discuss it in the comments on the issue before you run off and write the code. Because this package is largely intended to function as an educational tool and documentation companion, we are trying to keep the codebase as simple and clear as possible, and not all new feature requests will be accepted. That said, you are always welcome to maintain a fork of our repository that has the additional features that you need.
+You can request a new feature by [submitting an issue to our GitHub repository](https://github.com/npr/npr-one-backend-proxy-php/issues/new). Even if the feature is small and you are able to submit a pull request to implement it yourself, we would prefer to discuss it in the comments on the issue before you run off and write the code. Because this package is largely intended to function as an educational tool and documentation companion, we are trying to keep the codebase as simple and clear as possible, and not all new feature requests will be accepted. That said, you are always welcome to maintain a fork of our repository that has the additional features that you need.
 
 
 ## Contributing to Development
@@ -86,5 +86,5 @@ We are using [phpDocumentor](http://www.phpdoc.org) paired with the [phpdoc-md](
 This will generally only ever be done by a maintainer from within NPR, but just in case: We're using the [phly/changelog-generator](https://github.com/weierophinney/changelog_generator) package, and the CLI command is:
 
 ```
-vendor/bin/changelog_generator.php -t githubAPItoken -u nprdm -r npr-one-backend-proxy-php -m 1 > CHANGELOG.md
+vendor/bin/changelog_generator.php -t githubAPItoken -u npr -r npr-one-backend-proxy-php -m 1 > CHANGELOG.md
 ```
