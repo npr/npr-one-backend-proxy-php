@@ -68,7 +68,7 @@ This project includes tests which can be executed with PHPUnit.
 
 - `./vendor/bin/phpunit`: runs all unit tests
 
-PHPUnit is configured to generate coverage reports in a `coverage` folder under `test-results` in the root of the project. Overall test coverage can viewed by opening `test-results/coverage/index.html`. (N.B. These coverage reports are purposely excluded from source control.) Note that [Xdebug must be enabled](https://xdebug.org/docs/install) in order for code coverage to be generated.
+PHPUnit is configured to generate coverage reports in a `coverage` folder under `test-results` in the root of the project. (N.B. These coverage reports are purposely excluded from source control.) Note that [Xdebug must be enabled](https://xdebug.org/docs/install) in order for code coverage to be generated.
 
 XML files are also generated for reporting test results and coverage on a CI server; again, those can be found under `test-results`.
 

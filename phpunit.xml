@@ -23,7 +23,6 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-html" target="test-results/coverage" lowUpperBound="35" highLowerBound="70"/>
         <log type="coverage-clover" target="test-results/coverage.xml"/>
         <log type="junit" target="test-results/junit.xml" logIncompleteSkipped="false"/>
     </logging>
