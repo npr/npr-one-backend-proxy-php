@@ -38,7 +38,7 @@
     },
     "autoload": {
         "psr-4": {
-            "NPR\\": "src/"
+            "NPR\\One\\": "src/"
         }
     },
     "require": {
