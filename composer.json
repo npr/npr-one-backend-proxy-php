@@ -1,7 +1,7 @@
 {
     "name": "npr/npr-one-backend-proxy",
     "description": "A server-side proxy for interacting with the NPR One API's authorization server",
-    "version": "1.1.2",
+    "version": "2.0.0",
     "keywords": [
         "npr",
         "oauth",
@@ -42,7 +42,7 @@
         }
     },
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=5.6.0",
         "guzzlehttp/guzzle": "~6.0",
         "php-di/php-di": "^5.2"
     },
