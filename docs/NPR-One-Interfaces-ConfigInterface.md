@@ -66,14 +66,14 @@ grant type. Currently, client credentials tokens never expire, so hard-coding it
 
 
 
-### getNprApiHost
+### getNprAuthorizationServiceHost
 
-    string NPR\One\Interfaces\ConfigInterface::getNprApiHost()
+    string NPR\One\Interfaces\ConfigInterface::getNprAuthorizationServiceHost()
 
-Returns the NPR One API Hostname, useful for testing on staging environments. Most consumers will want to
-hard-code this to always return `https://api.npr.org`. Please do not include a trailing slash.
+Returns the NPR One Authorization Service hostname, useful for testing on staging environments.
 
-
+Most consumers will want to hard-code this to always return `https://authorization.api.npr.org`.
+Please do not include a trailing slash.
 
 * Visibility: **public**
 

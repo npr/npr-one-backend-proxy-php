@@ -52,7 +52,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
         $this->mockConfig = $this->getMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
-        $this->mockConfig->method('getNprApiHost')->willReturn('https://api.npr.org');
+        $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getClientUrl')->willReturn('https://one.example.com');
         $this->mockConfig->method('getAuthCodeCallbackUrl')->willReturn('https://one.example.com/oauth2/callback');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
@@ -170,7 +170,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
         $url = $controller->startAuthorizationGrant(['fake_scope']);
 
-        $this->assertContains('/authorization/v2/authorize', $url);
+        $this->assertContains('/v2/authorize', $url);
         $this->assertContains('client_id=' . self::$clientId, $url);
         $this->assertContains('redirect_uri=', $url);
         $this->assertContains('state=', $url);

@@ -35,7 +35,7 @@ class ConfigProvider implements ConfigInterface
     /**
      * @inheritdoc
      */
-    public function getNprApiHost()
+    public function getNprAuthorizationServiceHost()
     {
         return 'https://api.npr.org';
     }

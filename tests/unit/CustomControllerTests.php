@@ -42,7 +42,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
 
         $this->mockConfig = $this->getMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
-        $this->mockConfig->method('getNprApiHost')->willReturn('https://api.npr.org');
+        $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
         $this->mockConfig->method('getEncryptionSalt')->willReturn('asYh&%D9ne!j8HKQ');
 

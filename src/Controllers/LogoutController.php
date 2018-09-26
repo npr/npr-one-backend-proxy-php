@@ -75,7 +75,7 @@ class LogoutController extends AbstractOAuth2Controller
 
         /** @var Client $client */
         $client = DI::container()->get(Client::class);
-        $response = $client->request('POST', $this->getConfigProvider()->getNprApiHost() . '/authorization/v2/token/revoke', [
+        $response = $client->request('POST', $this->getConfigProvider()->getNprAuthorizationServiceHost() . '/v2/token/revoke', [
             'headers'     => [
                 'Authorization' => 'Bearer ' . $this->getConfigProvider()->getClientCredentialsToken()
             ],

@@ -85,7 +85,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
     {
         /** @var Client $client */
         $client = DI::container()->get(Client::class);
-        $response = $client->request('POST', $this->getConfigProvider()->getNprApiHost() . '/authorization/v2/device', [
+        $response = $client->request('POST', $this->getConfigProvider()->getNprAuthorizationServiceHost() . '/v2/device', [
             'headers'     => $this->getHeaders(),
             'form_params' => [
                 'client_id'     => $this->getConfigProvider()->getClientId(),

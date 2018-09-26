@@ -42,12 +42,13 @@ interface ConfigInterface
     public function getClientCredentialsToken();
 
     /**
-     * Returns the NPR One API Hostname, useful for testing on staging environments. Most consumers will want to
-     * hard-code this to always return `https://api.npr.org`. Please do not include a trailing slash.
+     * Returns the NPR One Authorization Service hostname, useful for testing on staging environments.
+     * Most consumers will want to hard-code this to always return `https://authorization.api.npr.org`.
+     * Please do not include a trailing slash.
      *
      * @return string
      */
-    public function getNprApiHost();
+    public function getNprAuthorizationServiceHost();
 
     /**
      * Returns the host (or path) of the NPR One application (the client/frontend). This is where the `authorization_code`

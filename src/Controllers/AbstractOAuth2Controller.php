@@ -225,7 +225,7 @@ abstract class AbstractOAuth2Controller
 
         /** @var Client $client */
         $client = DI::container()->get(Client::class);
-        $response = $client->request('POST', $this->config->getNprApiHost() . '/authorization/v2/token', [
+        $response = $client->request('POST', $this->config->getNprAuthorizationServiceHost() . '/v2/token', [
             'headers'     => $this->headers,
             'form_params' => array_merge([
                 'client_id'     => $this->config->getClientId(),

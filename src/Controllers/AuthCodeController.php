@@ -111,7 +111,7 @@ class AuthCodeController extends AbstractOAuth2Controller
             'scope'         => join(' ', $scopes)
         ];
 
-        return $this->getConfigProvider()->getNprApiHost() . '/authorization/v2/authorize?' . http_build_query($queryParams);
+        return $this->getConfigProvider()->getNprAuthorizationServiceHost() . '/v2/authorize?' . http_build_query($queryParams);
     }
 
     /**
