@@ -12,7 +12,7 @@ use Your\Package\Here\StorageProvider;
 
 /**
  * This route corresponds to Phase 1 of the Authorization Code grant.
- * @see https://github.com/nprdm/npr-one-backend-proxy-php#authorization-code-grant
+ * @see https://github.com/npr/npr-one-backend-proxy-php#authorization-code-grant
  *
  * If you are using the Device Code grant, you do not need to implement this route.
  */
@@ -44,7 +44,7 @@ Route::get('/', function ()
 
 /**
  * This route corresponds to Phase 2 of the Authorization Code grant.
- * @see https://github.com/nprdm/npr-one-backend-proxy-php#authorization-code-grant
+ * @see https://github.com/npr/npr-one-backend-proxy-php#authorization-code-grant
  *
  * It is important to note that the path corresponding to this route should match EXACTLY what you registered as
  * your `redirect_uri` in the NPR One Developer Center.
@@ -95,7 +95,7 @@ Route::get('callback', function ()
 
 /**
  * This route corresponds to Phase 1 of the Device Code grant.
- * @see https://github.com/nprdm/npr-one-backend-proxy-php#device-code-grant
+ * @see https://github.com/npr/npr-one-backend-proxy-php#device-code-grant
  *
  * If you are using the Authorization Code grant, you do not need to implement this route.
  */
@@ -131,7 +131,7 @@ Route::post('device', function ()
 
 /**
  * This route corresponds to Phase 2 of the Device Code grant.
- * @see https://github.com/nprdm/npr-one-backend-proxy-php#device-code-grant
+ * @see https://github.com/npr/npr-one-backend-proxy-php#device-code-grant
  *
  * If you are using the Authorization Code grant, you do not need to implement this route.
  */
@@ -161,7 +161,7 @@ Route::post('device/poll', function ()
 
 /**
  * This route corresponds to the Refresh Token grant.
- * @see https://github.com/nprdm/npr-one-backend-proxy-php#refresh-token-grant
+ * @see https://github.com/npr/npr-one-backend-proxy-php#refresh-token-grant
  *
  * EVERYONE, regardless of which grant you use to log in your users, must implement this route.
  */

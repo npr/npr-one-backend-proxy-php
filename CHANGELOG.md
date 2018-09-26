@@ -12,8 +12,8 @@ Added support for Travis CI
 # 1.1.0 (2016-08-04)
 
 Total issues resolved: **2**
-- [2: Add status text (reason phrase) to ApiException class](https://github.com/nprdm/npr-one-backend-proxy-php/issues/2)
-- [1: Add custom exception class for API errors](https://github.com/nprdm/npr-one-backend-proxy-php/issues/1)
+- [2: Add status text (reason phrase) to ApiException class](https://github.com/npr/npr-one-backend-proxy-php/issues/2)
+- [1: Add custom exception class for API errors](https://github.com/npr/npr-one-backend-proxy-php/issues/1)
 
 
 <a name="1.0.0"></a>

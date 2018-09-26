@@ -29,9 +29,9 @@
     ],
     "support": {
         "email": "NPROneEnterprise@npr.org",
-        "issues": "https://github.com/nprdm/npr-one-backend-proxy-php/issues",
-        "source": "https://github.com/nprdm/npr-one-backend-proxy-php",
-        "docs": "https://github.com/nprdm/npr-one-backend-proxy-php/tree/master/docs#readme"
+        "issues": "https://github.com/npr/npr-one-backend-proxy-php/issues",
+        "source": "https://github.com/npr/npr-one-backend-proxy-php",
+        "docs": "https://github.com/npr/npr-one-backend-proxy-php/tree/master/docs#readme"
     },
     "config": {
         "preferred-install": "dist"
