@@ -36,7 +36,7 @@ class AuthCodeController extends AbstractOAuth2Controller
     public function __construct()
     {
         parent::__construct();
-        $this->cookies = DI::container()->get('NPR\One\Providers\CookieProvider');
+        $this->cookies = DI::container()->get(CookieProvider::class);
     }
 
     /**

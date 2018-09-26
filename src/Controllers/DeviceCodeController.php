@@ -80,7 +80,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
     private function createDeviceCode(array $scopes)
     {
         /** @var Client $client */
-        $client = DI::container()->get('GuzzleHttp\Client');
+        $client = DI::container()->get(Client::class);
         $response = $client->request('POST', $this->getConfigProvider()->getNprApiHost() . '/authorization/v2/device', [
             'headers'     => $this->getHeaders(),
             'form_params' => [
