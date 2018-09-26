@@ -123,6 +123,7 @@ class AuthCodeController extends AbstractOAuth2Controller
      * @return AccessTokenModel - useful for debugging
      * @throws \InvalidArgumentException
      * @throws \Exception when state param is invalid
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function completeAuthorizationGrant($authorizationCode, $state)
     {

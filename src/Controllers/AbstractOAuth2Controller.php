@@ -211,6 +211,8 @@ abstract class AbstractOAuth2Controller
      * @return AccessTokenModel
      * @throws \InvalidArgumentException
      * @throws ApiException
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     final protected function createAccessToken($grantType, $additionalParams = [])
     {

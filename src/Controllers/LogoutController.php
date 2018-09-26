@@ -26,6 +26,7 @@ class LogoutController extends AbstractOAuth2Controller
      * @api
      * @param string|null $accessToken
      * @throws \Exception if no access token is passed in and no refresh token is found in the secure storage layer
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function deleteAccessAndRefreshTokens($accessToken = null)
     {
@@ -55,6 +56,7 @@ class LogoutController extends AbstractOAuth2Controller
      * @param string $token
      * @param bool $isRefreshToken
      * @throws ApiException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function revokeToken($token, $isRefreshToken = false)
     {

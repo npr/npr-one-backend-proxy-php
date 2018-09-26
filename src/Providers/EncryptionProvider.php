@@ -39,6 +39,7 @@ class EncryptionProvider implements EncryptionInterface
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function encrypt($value)
     {
@@ -68,6 +69,7 @@ class EncryptionProvider implements EncryptionInterface
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function decrypt($value)
     {

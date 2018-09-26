@@ -22,6 +22,7 @@ class RefreshTokenController extends AbstractOAuth2Controller
      * @api
      * @return AccessTokenModel
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function generateNewAccessTokenFromRefreshToken()
     {

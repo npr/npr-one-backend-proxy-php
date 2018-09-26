@@ -27,6 +27,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @return DeviceCodeModel
      * @throws \InvalidArgumentException
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function startDeviceCodeGrant(array $scopes)
     {
@@ -48,6 +49,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @api
      * @return AccessTokenModel
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function pollDeviceCodeGrant()
     {
@@ -76,6 +78,8 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @param string[] $scopes
      * @return DeviceCodeModel
      * @throws ApiException
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function createDeviceCode(array $scopes)
     {
