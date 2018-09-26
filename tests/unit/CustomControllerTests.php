@@ -23,7 +23,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
     private $mockSecureCookie;
     /** @var EncryptionProvider */
     private $mockEncryption;
-    /** @varConfigInterface */
+    /** @var ConfigInterface */
     private $mockConfig;
     /** @var Client */
     private $mockClient;
