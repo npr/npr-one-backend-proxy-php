@@ -7,6 +7,12 @@ use GuzzleHttp\Psr7\Response;
 
 use NPR\One\Controllers\AuthCodeController;
 use NPR\One\DI\DI;
+use NPR\One\Interfaces\ConfigInterface;
+use NPR\One\Interfaces\StorageInterface;
+use NPR\One\Models\AccessTokenModel;
+use NPR\One\Providers\CookieProvider;
+use NPR\One\Providers\EncryptionProvider;
+use NPR\One\Providers\SecureCookieProvider;
 
 
 class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
@@ -14,17 +20,17 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
 
-    /** @var \NPR\One\Providers\CookieProvider */
+    /** @var CookieProvider */
     private $mockCookie;
-    /** @var \NPR\One\Providers\SecureCookieProvider */
+    /** @var SecureCookieProvider */
     private $mockSecureCookie;
-    /** @var \NPR\One\Providers\EncryptionProvider */
+    /** @var EncryptionProvider */
     private $mockEncryption;
-    /** @var \NPR\One\Interfaces\StorageInterface */
+    /** @var StorageInterface */
     private $mockStorage;
-    /** @var \NPR\One\Interfaces\ConfigInterface */
+    /** @var ConfigInterface */
     private $mockConfig;
-    /** @var \GuzzleHttp\Client */
+    /** @var Client */
     private $mockClient;
 
     /** @var string */
@@ -33,20 +39,20 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->mockCookie = $this->getMock('NPR\One\Providers\CookieProvider');
+        $this->mockCookie = $this->getMock(CookieProvider::class);
 
-        $this->mockSecureCookie = $this->getMock('NPR\One\Providers\SecureCookieProvider');
+        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
 
-        $this->mockEncryption = $this->getMock('NPR\One\Providers\EncryptionProvider');
+        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockStorage = $this->getMock('NPR\One\Interfaces\StorageInterface');
+        $this->mockStorage = $this->getMock(StorageInterface::class);
         $this->mockStorage->method('compare')->willReturn(true);
 
-        $this->mockConfig = $this->getMock('NPR\One\Interfaces\ConfigInterface');
+        $this->mockConfig = $this->getMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
-        $this->mockConfig->method('getNprApiHost')->willReturn('https://api.npr.org');
+        $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getClientUrl')->willReturn('https://one.example.com');
         $this->mockConfig->method('getAuthCodeCallbackUrl')->willReturn('https://one.example.com/oauth2/callback');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
@@ -54,10 +60,10 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
         $this->mockClient = new Client(['handler' => HandlerStack::create(new MockHandler())]);
 
-        DI::container()->set('NPR\One\Providers\CookieProvider', $this->mockCookie);
-        DI::container()->set('NPR\One\Providers\SecureCookieProvider', $this->mockSecureCookie);
-        DI::container()->set('NPR\One\Providers\EncryptionProvider', $this->mockEncryption);
-        DI::container()->set('GuzzleHttp\Client', $this->mockClient); // just in case
+        DI::container()->set(CookieProvider::class, $this->mockCookie);
+        DI::container()->set(SecureCookieProvider::class, $this->mockSecureCookie);
+        DI::container()->set(EncryptionProvider::class, $this->mockEncryption);
+        DI::container()->set(Client::class, $this->mockClient); // just in case
     }
 
     public function testGeoIpHeadersSetInConstructor()
@@ -113,7 +119,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
      */
     public function testEncryptionProviderException()
     {
-        $mockEncryption = $this->getMock('NPR\One\Providers\EncryptionProvider');
+        $mockEncryption = $this->getMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
         $controller = new AuthCodeController();
@@ -164,7 +170,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
         $url = $controller->startAuthorizationGrant(['fake_scope']);
 
-        $this->assertContains('/authorization/v2/authorize', $url);
+        $this->assertContains('/v2/authorize', $url);
         $this->assertContains('client_id=' . self::$clientId, $url);
         $this->assertContains('redirect_uri=', $url);
         $this->assertContains('state=', $url);
@@ -221,7 +227,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler, 'http_errors' => false]);
 
-        DI::container()->set('GuzzleHttp\Client', $client);
+        DI::container()->set(Client::class, $client);
 
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
@@ -243,9 +249,9 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler, 'http_errors' => false]);
 
-        DI::container()->set('GuzzleHttp\Client', $client);
+        DI::container()->set(Client::class, $client);
 
-        $mockStorage = $this->getMock('NPR\One\Interfaces\StorageInterface');
+        $mockStorage = $this->getMock(StorageInterface::class);
         $mockStorage->method('compare')->willReturn(false);
 
         $controller = new AuthCodeController();
@@ -264,7 +270,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
 
-        DI::container()->set('GuzzleHttp\Client', $client);
+        DI::container()->set(Client::class, $client);
 
         $this->mockCookie->expects($this->once())->method('set'); //access token
 
@@ -273,7 +279,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
         $controller->setStorageProvider($this->mockStorage);
         $accessToken = $controller->completeAuthorizationGrant('fake_grant_code', 'fake:state');
 
-        $this->assertInstanceOf('NPR\One\Models\AccessTokenModel', $accessToken, 'completeAuthorizationGrant response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'completeAuthorizationGrant response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 
@@ -286,7 +292,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
 
-        DI::container()->set('GuzzleHttp\Client', $client);
+        DI::container()->set(Client::class, $client);
 
         $this->mockCookie->expects($this->once())->method('set'); //access token
 
@@ -295,7 +301,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
         $controller->setStorageProvider($this->mockStorage);
         $accessToken = $controller->completeAuthorizationGrant('fake_grant_code', 'fake:state');
 
-        $this->assertInstanceOf('NPR\One\Models\AccessTokenModel', $accessToken, 'completeAuthorizationGrant response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'completeAuthorizationGrant response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 }

@@ -27,6 +27,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @return DeviceCodeModel
      * @throws \InvalidArgumentException
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function startDeviceCodeGrant(array $scopes)
     {
@@ -48,6 +49,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @api
      * @return AccessTokenModel
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function pollDeviceCodeGrant()
     {
@@ -76,12 +78,14 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @param string[] $scopes
      * @return DeviceCodeModel
      * @throws ApiException
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function createDeviceCode(array $scopes)
     {
         /** @var Client $client */
-        $client = DI::container()->get('GuzzleHttp\Client');
-        $response = $client->request('POST', $this->getConfigProvider()->getNprApiHost() . '/authorization/v2/device', [
+        $client = DI::container()->get(Client::class);
+        $response = $client->request('POST', $this->getConfigProvider()->getNprAuthorizationServiceHost() . '/v2/device', [
             'headers'     => $this->getHeaders(),
             'form_params' => [
                 'client_id'     => $this->getConfigProvider()->getClientId(),

@@ -3,7 +3,6 @@
 namespace NPR\One\Controllers;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
 use NPR\One\DI\DI;
 use NPR\One\Exceptions\ApiException;
 use NPR\One\Interfaces\ConfigInterface;
@@ -11,6 +10,7 @@ use NPR\One\Interfaces\EncryptionInterface;
 use NPR\One\Interfaces\StorageInterface;
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\CookieProvider;
+use NPR\One\Providers\EncryptionProvider;
 use NPR\One\Providers\SecureCookieProvider;
 
 
@@ -54,8 +54,8 @@ abstract class AbstractOAuth2Controller
                 'X-Longitude' => $_SERVER['GEOIP_LONGITUDE']
             ];
         }
-        $this->encryption = DI::container()->get('NPR\One\Providers\EncryptionProvider');
-        $this->secureStorage = DI::container()->get('NPR\One\Providers\SecureCookieProvider');
+        $this->encryption = DI::container()->get(EncryptionProvider::class);
+        $this->secureStorage = DI::container()->get(SecureCookieProvider::class);
         $this->secureStorage->setEncryptionProvider($this->encryption);
     }
 
@@ -211,6 +211,8 @@ abstract class AbstractOAuth2Controller
      * @return AccessTokenModel
      * @throws \InvalidArgumentException
      * @throws ApiException
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     final protected function createAccessToken($grantType, $additionalParams = [])
     {
@@ -222,8 +224,8 @@ abstract class AbstractOAuth2Controller
         $this->ensureExternalProvidersExist();
 
         /** @var Client $client */
-        $client = DI::container()->get('GuzzleHttp\Client');
-        $response = $client->request('POST', $this->config->getNprApiHost() . '/authorization/v2/token', [
+        $client = DI::container()->get(Client::class);
+        $response = $client->request('POST', $this->config->getNprAuthorizationServiceHost() . '/v2/token', [
             'headers'     => $this->headers,
             'form_params' => array_merge([
                 'client_id'     => $this->config->getClientId(),

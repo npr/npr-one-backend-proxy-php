@@ -36,7 +36,7 @@ class AuthCodeController extends AbstractOAuth2Controller
     public function __construct()
     {
         parent::__construct();
-        $this->cookies = DI::container()->get('NPR\One\Providers\CookieProvider');
+        $this->cookies = DI::container()->get(CookieProvider::class);
     }
 
     /**
@@ -111,7 +111,7 @@ class AuthCodeController extends AbstractOAuth2Controller
             'scope'         => join(' ', $scopes)
         ];
 
-        return $this->getConfigProvider()->getNprApiHost() . '/authorization/v2/authorize?' . http_build_query($queryParams);
+        return $this->getConfigProvider()->getNprAuthorizationServiceHost() . '/v2/authorize?' . http_build_query($queryParams);
     }
 
     /**
@@ -123,6 +123,7 @@ class AuthCodeController extends AbstractOAuth2Controller
      * @return AccessTokenModel - useful for debugging
      * @throws \InvalidArgumentException
      * @throws \Exception when state param is invalid
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function completeAuthorizationGrant($authorizationCode, $state)
     {

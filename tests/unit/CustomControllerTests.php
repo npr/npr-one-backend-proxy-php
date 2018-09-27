@@ -7,6 +7,11 @@ use GuzzleHttp\Psr7\Response;
 
 use NPR\One\Controllers\AbstractOAuth2Controller;
 use NPR\One\DI\DI;
+use NPR\One\Interfaces\ConfigInterface;
+use NPR\One\Models\AccessTokenModel;
+use NPR\One\Providers\CookieProvider;
+use NPR\One\Providers\EncryptionProvider;
+use NPR\One\Providers\SecureCookieProvider;
 
 
 class CustomControllerTests extends PHPUnit_Framework_TestCase
@@ -14,13 +19,13 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
 
-    /** @var \NPR\One\Providers\SecureCookieProvider */
+    /** @var SecureCookieProvider */
     private $mockSecureCookie;
-    /** @var \NPR\One\Providers\EncryptionProvider */
+    /** @var EncryptionProvider */
     private $mockEncryption;
-    /** @var \NPR\One\Interfaces\ConfigInterface */
+    /** @var ConfigInterface */
     private $mockConfig;
-    /** @var \GuzzleHttp\Client */
+    /** @var Client */
     private $mockClient;
 
     /** @var string */
@@ -29,23 +34,23 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->mockSecureCookie = $this->getMock('NPR\One\Providers\SecureCookieProvider');
+        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
 
-        $this->mockEncryption = $this->getMock('NPR\One\Providers\EncryptionProvider');
+        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockConfig = $this->getMock('NPR\One\Interfaces\ConfigInterface');
+        $this->mockConfig = $this->getMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
-        $this->mockConfig->method('getNprApiHost')->willReturn('https://api.npr.org');
+        $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
         $this->mockConfig->method('getEncryptionSalt')->willReturn('asYh&%D9ne!j8HKQ');
 
         $this->mockClient = new Client(['handler' => HandlerStack::create(new MockHandler())]);
 
-        DI::container()->set('NPR\One\Providers\SecureCookieProvider', $this->mockSecureCookie);
-        DI::container()->set('NPR\One\Providers\EncryptionProvider', $this->mockEncryption);
-        DI::container()->set('GuzzleHttp\Client', $this->mockClient); // just in case
+        DI::container()->set(SecureCookieProvider::class, $this->mockSecureCookie);
+        DI::container()->set(EncryptionProvider::class, $this->mockEncryption);
+        DI::container()->set(Client::class, $this->mockClient); // just in case
     }
 
     /**
@@ -75,7 +80,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
      */
     public function testSecureStorageProviderWarning()
     {
-        $mockCookie = $this->getMock('NPR\One\Providers\CookieProvider');
+        $mockCookie = $this->getMock(CookieProvider::class);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
@@ -101,7 +106,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
      */
     public function testEncryptionProviderInvalidException()
     {
-        $mockEncryption = $this->getMock('NPR\One\Providers\EncryptionProvider');
+        $mockEncryption = $this->getMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
         $controller = new CustomController();
@@ -135,7 +140,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-        DI::container()->set('GuzzleHttp\Client', $client);
+        DI::container()->set(Client::class, $client);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
@@ -150,7 +155,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-        DI::container()->set('GuzzleHttp\Client', $client);
+        DI::container()->set(Client::class, $client);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
@@ -158,7 +163,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->setEncryptionProvider($this->mockEncryption);
         $accessToken = $controller->issueAccessToken();
 
-        $this->assertInstanceOf('NPR\One\Models\AccessTokenModel', $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 
@@ -170,7 +175,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-        DI::container()->set('GuzzleHttp\Client', $client);
+        DI::container()->set(Client::class, $client);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
@@ -178,7 +183,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->setEncryptionProvider($this->mockEncryption);
         $accessToken = $controller->issueAccessToken();
 
-        $this->assertInstanceOf('NPR\One\Models\AccessTokenModel', $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 }
