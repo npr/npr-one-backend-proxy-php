@@ -45,9 +45,17 @@ If you would like to contribute to the development of this project, here is the 
 
 ### Getting Set Up
 
-This project uses [Composer](https://getcomposer.org/) and includes a composer.phar for convenience under `/bin`.
+This project uses [Composer](https://getcomposer.org/).
 
-- `bin/composer.phar install`: install all dependencies
+```bash
+# Install Composer
+curl -sS https://getcomposer.org/installer | php
+```
+
+```bash
+# Install the latest release
+php composer.phar require npr/npr-one-backend-proxy
+```
 
 Additionally, we highly recommend doing your development with [Xdebug enabled](https://xdebug.org/docs/install), to allow you to take advantage of various features, such as automatic code coverage measurement.
 
