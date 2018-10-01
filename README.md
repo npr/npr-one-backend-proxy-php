@@ -1,6 +1,6 @@
 # NPR One Backend Proxy
 
-A PHP-based server-side proxy for interacting with the [NPR One API](http://dev.npr.org/api/)'s authorization server. Use this proxy to secure your OAuth2 credentials.
+A PHP-based server-side proxy for interacting with the [NPR One API](https://dev.npr.org/api/)'s authorization server. Use this proxy to secure your OAuth2 credentials.
 
 [![Packagist](https://img.shields.io/packagist/v/npr/npr-one-backend-proxy.svg?maxAge=2592000)](https://packagist.org/packages/npr/npr-one-backend-proxy) [![Packagist](https://img.shields.io/packagist/l/npr/npr-one-backend-proxy.svg?maxAge=2592000)](https://github.com/npr/npr-one-backend-proxy-php/blob/master/LICENSE.md) [![Packagist](https://img.shields.io/packagist/dt/npr/npr-one-backend-proxy.svg?maxAge=2592000)](https://packagist.org/packages/npr/npr-one-backend-proxy) [![Build Status](https://travis-ci.org/npr/npr-one-backend-proxy-php.svg?branch=master)](https://travis-ci.org/npr/npr-one-backend-proxy-php) [![Coverage Status](https://coveralls.io/repos/github/npr/npr-one-backend-proxy-php/badge.svg?branch=master)](https://coveralls.io/github/npr/npr-one-backend-proxy-php?branch=master)
 
@@ -31,7 +31,7 @@ A PHP-based server-side proxy for interacting with the [NPR One API](http://dev.
 
 ## Background
 
-The [NPR One API](http://dev.npr.org/api/) provides a lightweight [REST](http://www.restapitutorial.com/)/[Hypermedia](https://smartbear.com/learn/api-design/what-is-hypermedia/) interface to power an [NPR One](http://www.npr.org/about/products/npr-one/) experience. To secure our API, we have implemented an authorization server based on the [OAuth 2.0 protocol](https://tools.ietf.org/html/rfc6749), a well-accepted Internet standard.
+The [NPR One API](https://dev.npr.org/api/) provides a lightweight [REST](http://www.restapitutorial.com/)/[Hypermedia](https://smartbear.com/learn/api-design/what-is-hypermedia/) interface to power an [NPR One](https://www.npr.org/about/products/npr-one/) experience. To secure our API, we have implemented an authorization server based on the [OAuth 2.0 protocol](https://tools.ietf.org/html/rfc6749), a well-accepted Internet standard.
 
 Third-party developers have two primary methods for obtaining the access tokens required by our API to interact with any of our other micro-services:
 
@@ -55,7 +55,7 @@ A recent version of [PHP](http://php.net/), equal to or greater than 5.6.0 is re
 
 The default [EncryptionProvider](/src/Providers/EncryptionProvider.php) class provided in this package relies on the [OpenSSL](http://php.net/manual/en/book.openssl.php) extension. If OpenSSL is unavailable, the consumer has the option to implement a custom EncryptionProvider class that implements our [EncryptionInterface](/src/Interfaces/EncryptionInterface.php). (For more information, see the [EncryptionProvider](#encryptionprovider) section.)
 
-Usage of NPR's authorization server requires a registered developer account with the [NPR One Developer Center](http://dev.npr.org/). If you do not already have a Dev Center account, you can [register for a personal account](http://dev.npr.org/apply/) and get started immediately.
+Usage of NPR's authorization server requires a registered developer account with the [NPR One Developer Center](https://dev.npr.org/). If you do not already have a Dev Center account, you can [register for a personal account](https://dev.npr.org/apply/) and get started immediately.
 
 ### Installation
 
@@ -181,7 +181,7 @@ The `authorization_code` flow has two phases, which in our case correspond to th
 
 * **Phase 1:** `startAuthorizationGrant()` constructs the query parameters that are needed for the call and appends them to `https://authorization.api.npr.org/v2/authorize`. Your router should then redirect the browser to that URL (either using a framework's built-in function such as Laravel's `redirect()->away($url)`, or otherwise just using a good old-fashioned `header("Location: $url")`).
 
-* **Phase 2:** `completeAuthorizationGrant()` should be mapped to the `redirect_uri` that you added to your client application in the NPR One [Developer Console](http://dev.npr.org/console). This function has two primary responsibilities:
+* **Phase 2:** `completeAuthorizationGrant()` should be mapped to the `redirect_uri` that you added to your client application in the NPR One [Developer Console](https://dev.npr.org/console). This function has two primary responsibilities:
     1. Validating the `state` parameter that was generated during the `startAuthorizationGrant()` phase. This extra check ensures that your call was not intercepted by a malicious third party.
     1. Exchanging the authorization code for an actual access token using the `POST https://authorization.api.npr.org/v2/token` endpoint.
 
@@ -213,7 +213,7 @@ This method should be called when any client application that has previously obt
 
 We ask all clients to help secure user data and free up unused resources in our system by implementing a form of logout functionality that will revoke the user’s previously-generated access tokens and refresh tokens through the `POST https://authorization.api.npr.org/v2/token/revoke` endpoint. The `deleteAccessAndRefreshTokens()` function in the [LogoutController](/src/Controllers/LogoutController.php) class will perform this task, in addition to deleting the `refresh_token` that was previously saved to an encrypted cookie or your custom [secure storage provider](#securestorageprovider). Your client application can be ignorant of whatever mechanism you're using to securely store the refresh token and safely assume that it is properly removed as part of logout.
 
-As described in the [NPR One API Reference](http://dev.npr.org/api), the `POST https://authorization.api.npr.org/v2/token/revoke` endpoint takes in either an access token or a refresh token. By default, it's assumed to be an access token, but it will delete **both** regardless of which of the two is passed in. Therefore, the `deleteAccessAndRefreshTokens()` function _can_ take in an access token, but if none is provided, it will look for a refresh token and, if found, use that to revoke the pair of tokens. It is recommended to pass in the access token if you have it (especially for client applications developed prior to summer 2016, when refresh tokens were first introduced). If you are certain that refresh tokens have been issued for all your users and there is no chance that they have been removed by other client-side code, you can safely call `deleteAccessAndRefreshTokens()` without any parameters.
+As described in the [NPR One API Reference](https://dev.npr.org/api), the `POST https://authorization.api.npr.org/v2/token/revoke` endpoint takes in either an access token or a refresh token. By default, it's assumed to be an access token, but it will delete **both** regardless of which of the two is passed in. Therefore, the `deleteAccessAndRefreshTokens()` function _can_ take in an access token, but if none is provided, it will look for a refresh token and, if found, use that to revoke the pair of tokens. It is recommended to pass in the access token if you have it (especially for client applications developed prior to summer 2016, when refresh tokens were first introduced). If you are certain that refresh tokens have been issued for all your users and there is no chance that they have been removed by other client-side code, you can safely call `deleteAccessAndRefreshTokens()` without any parameters.
 
 This proxy does not impose any requirements for how you set up and call your endpoints (save for what is strictly required by the OAuth 2.0 spec), so the access token parameter needed for the `deleteAccessAndRefreshTokens()` function can be obtained from a variety of sources: via a query parameter, form `POST` data, a `POST` with a JSON body, and potentially even a cookie, if that is how you are storing your access tokens client-side. The example [Router.php](/examples/Router.php) file uses a query parameter for simplicity's sake. In most cases, `POST` requests with form data or JSON bodies are preferable because they are slightly harder to intercept over insecure networks, but since the assumption here is that the access token will be revoked almost immediately, keeping the token secure is not a huge concern.
 
@@ -222,7 +222,7 @@ This proxy does not impose any requirements for how you set up and call your end
 
 Further information about the public API of this package can be found in the [docs](/docs/#readme) folder.
 
-For background information about the NPR One API and our use of OAuth2, please see the [developer guide](http://dev.npr.org/guide/) at the [NPR One Developer Center](http://dev.npr.org/). In particular, the section on the [Authorization Service](http://dev.npr.org/guide/services/authorization/) may be of interest.
+For background information about the NPR One API and our use of OAuth2, please see the [developer guide](https://dev.npr.org/guide/) at the [NPR One Developer Center](https://dev.npr.org/). In particular, the section on the [Authorization Service](https://dev.npr.org/guide/services/authorization/) may be of interest.
 
 
 ## Contributing
@@ -242,9 +242,9 @@ When using the Work, You may not (or allow those acting on Your behalf to):
 
 a.	Perform any action with the intent of introducing to the Work, the NPR One API, the NPR servers or network infrastructure, or any NPR products and services any viruses, worms, defects, Trojan horses, malware or any items of a destructive or malicious nature; or obtaining unauthorized access to the NPR One API, the NPR servers or network infrastructure, or any NPR products or services;
 
-b.	Remove, obscure or alter any NPR terms of service, including the [NPR services Terms of Use](http://www.npr.org/about-npr/179876898/terms-of-use) and the [Developer API Terms of Use](http://dev.npr.org/terms-of-use/), or any links to or notices of those terms; or
+b.	Remove, obscure or alter any NPR terms of service, including the [NPR services Terms of Use](https://www.npr.org/about-npr/179876898/terms-of-use) and the [Developer API Terms of Use](https://dev.npr.org/terms-of-use/), or any links to or notices of those terms; or
 
-c.	Take any other action prohibited by any NPR terms of service, including the [NPR services Terms of Use](http://www.npr.org/about-npr/179876898/terms-of-use) and the [Developer API Terms of Use](http://dev.npr.org/terms-of-use/).
+c.	Take any other action prohibited by any NPR terms of service, including the [NPR services Terms of Use](https://www.npr.org/about-npr/179876898/terms-of-use) and the [Developer API Terms of Use](https://dev.npr.org/terms-of-use/).
 
 You may obtain a copy of the License at http://www.apache.org/licenses/License-2.0
 
