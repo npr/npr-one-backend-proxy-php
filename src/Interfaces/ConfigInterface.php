@@ -30,7 +30,7 @@ interface ConfigInterface
      *
      * Because there currently is no other use case requiring client credentials tokens, this proxy does not implement
      * the functionality to generate a `client_credentials` token for you; you are expected to provide your own. The
-     * easiest method to do so is to go to our interactive API documentation at http://dev.npr.org/api/#!/authorization/createToken
+     * easiest method to do so is to go to our interactive API documentation at https://dev.npr.org/api/#!/authorization/createToken
      * and plug in your `client_id` and `client_secret`, the only two parameters required by the `client_credentials`
      * grant type. Currently, client credentials tokens never expire, so hard-coding it here is not an issue.
      *

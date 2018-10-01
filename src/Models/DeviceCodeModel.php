@@ -68,7 +68,7 @@ class DeviceCodeModel extends JsonModel
     }
 
     /**
-     * Returns the user code -- the 8-character alphanumeric code that the user is asked to enter at http://npr.org/device
+     * Returns the user code -- the 8-character alphanumeric code that the user is asked to enter at https://npr.org/device
      * before logging in. This code can safely be returned to the client and displayed on the device's screen.
      *
      * @return string
