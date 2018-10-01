@@ -31,7 +31,7 @@ A PHP-based server-side proxy for interacting with the [NPR One API](https://dev
 
 ## Background
 
-The [NPR One API](https://dev.npr.org/api/) provides a lightweight [REST](http://www.restapitutorial.com/)/[Hypermedia](https://smartbear.com/learn/api-design/what-is-hypermedia/) interface to power an [NPR One](https://www.npr.org/about/products/npr-one/) experience. To secure our API, we have implemented an authorization server based on the [OAuth 2.0 protocol](https://tools.ietf.org/html/rfc6749), a well-accepted Internet standard.
+The [NPR One API](https://dev.npr.org/api/) provides a lightweight [REST](https://www.restapitutorial.com/)/[Hypermedia](https://smartbear.com/learn/api-design/what-is-hypermedia/) interface to power an [NPR One](https://www.npr.org/about/products/npr-one/) experience. To secure our API, we have implemented an authorization server based on the [OAuth 2.0 protocol](https://tools.ietf.org/html/rfc6749), a well-accepted Internet standard.
 
 Third-party developers have two primary methods for obtaining the access tokens required by our API to interact with any of our other micro-services:
 
@@ -51,9 +51,9 @@ This project is designed to be executed in a server environment with [Apache HTT
 
 ### Prerequisites
 
-A recent version of [PHP](http://php.net/), equal to or greater than 5.6.0 is required.
+A recent version of [PHP](https://php.net/), equal to or greater than 5.6.0 is required.
 
-The default [EncryptionProvider](/src/Providers/EncryptionProvider.php) class provided in this package relies on the [OpenSSL](http://php.net/manual/en/book.openssl.php) extension. If OpenSSL is unavailable, the consumer has the option to implement a custom EncryptionProvider class that implements our [EncryptionInterface](/src/Interfaces/EncryptionInterface.php). (For more information, see the [EncryptionProvider](#encryptionprovider) section.)
+The default [EncryptionProvider](/src/Providers/EncryptionProvider.php) class provided in this package relies on the [OpenSSL](https://php.net/manual/en/book.openssl.php) extension. If OpenSSL is unavailable, the consumer has the option to implement a custom EncryptionProvider class that implements our [EncryptionInterface](/src/Interfaces/EncryptionInterface.php). (For more information, see the [EncryptionProvider](#encryptionprovider) section.)
 
 Usage of NPR's authorization server requires a registered developer account with the [NPR One Developer Center](https://dev.npr.org/). If you do not already have a Dev Center account, you can [register for a personal account](https://dev.npr.org/apply/) and get started immediately.
 
@@ -100,13 +100,13 @@ There is a sample [ConfigProvider.php](/examples/ConfigProvider.php) in the [exa
 
 If you are using the `authorization_code` grant (and thereby the `AuthCodeController`), create a StorageProvider class which implements our [StorageInterface](/src/Interfaces/StorageInterface.php). The StorageProvider is required to validate the OAuth2 `state` param.
 
-You will find a sample [StorageProvider.php](/examples/StorageProvider.php) file in the [examples](/examples/) folder. The example utilizes [Predis](https://github.com/nrk/predis), a PHP [Redis](http://redis.io/) client, but there are many other options, including [Memcached](http://php.net/manual/en/book.memcached.php) and [PHP sessions](http://php.net/manual/en/book.session.php). MySQL is also an option, but not recommended because it is likely to be much slower. We picked Predis for demonstration purposes because the syntax is very simple and applicable to many other storage layers.
+You will find a sample [StorageProvider.php](/examples/StorageProvider.php) file in the [examples](/examples/) folder. The example utilizes [Predis](https://github.com/nrk/predis), a PHP [Redis](https://redis.io/) client, but there are many other options, including [Memcached](https://php.net/manual/en/book.memcached.php) and [PHP sessions](https://php.net/manual/en/book.session.php). MySQL is also an option, but not recommended because it is likely to be much slower. We picked Predis for demonstration purposes because the syntax is very simple and applicable to many other storage layers.
 
 #### Optional
 
 ##### EncryptionProvider
 
-The Controller classes will save the refresh token and access token in a cookie by default. In order to keep those refresh tokens secure, we encrypt them before saving and decrypt them when we need to retrieve them. To make this process less cumbersome, a default [EncryptionProvider](/src/Providers/EncryptionProvider.php) has been provided. However, this particular EncryptionProvider relies on the [OpenSSL](http://php.net/manual/en/book.openssl.php) extension being available, which may not be an option for all developers. If OpenSSL is unavailable, or if you want to use a different method of encryption, you can use a custom encryption provider that implements our [EncryptionInterface](/src/Interfaces/EncryptionInterface.php).
+The Controller classes will save the refresh token and access token in a cookie by default. In order to keep those refresh tokens secure, we encrypt them before saving and decrypt them when we need to retrieve them. To make this process less cumbersome, a default [EncryptionProvider](/src/Providers/EncryptionProvider.php) has been provided. However, this particular EncryptionProvider relies on the [OpenSSL](https://php.net/manual/en/book.openssl.php) extension being available, which may not be an option for all developers. If OpenSSL is unavailable, or if you want to use a different method of encryption, you can use a custom encryption provider that implements our [EncryptionInterface](/src/Interfaces/EncryptionInterface.php).
 
 If you choose to implement a custom encryption provider, use the [default implementation](/src/Providers/EncryptionProvider.php) as your example. The syntax for including your own custom encryption provider is as follows:
 
@@ -138,7 +138,7 @@ $controller = (new DeviceCodeController())
 
 ##### SecureStorageProvider
 
-As explained above, encrypted cookies are used to store refresh tokens across sessions. However, cookies are not the only possible storage method: [Redis](http://redis.io/) and [Memcached](http://php.net/manual/en/book.memcached.php) are good options (as long as you have a mechanism for identifying the user across sessions, which may still require cookies). If you are considering using PHP's session storage, you may want to take a look at [PHP-Secure-Session](https://github.com/ezimuel/PHP-Secure-Session), which provides an extra layer of security through encryption.
+As explained above, encrypted cookies are used to store refresh tokens across sessions. However, cookies are not the only possible storage method: [Redis](https://redis.io/) and [Memcached](https://php.net/manual/en/book.memcached.php) are good options (as long as you have a mechanism for identifying the user across sessions, which may still require cookies). If you are considering using PHP's session storage, you may want to take a look at [PHP-Secure-Session](https://github.com/ezimuel/PHP-Secure-Session), which provides an extra layer of security through encryption.
 
 All of the Controller classes are configured to use the [SecureCookieProvider](/src/Providers/SecureCookieProvider.php) as the default secure storage layer, but you can easily override this using the `setSecureStorageProvider()` function:
 

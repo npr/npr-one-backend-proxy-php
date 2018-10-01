@@ -45,7 +45,7 @@ class ConfigProvider implements ConfigInterface
      */
     public function getClientUrl()
     {
-        return 'http://nprone.example.com';
+        return 'https://nprone.example.com';
     }
 
     /**
@@ -53,7 +53,7 @@ class ConfigProvider implements ConfigInterface
      */
     public function getAuthCodeCallbackUrl()
     {
-        return 'http://nprone.example.com/oauth2/callback';
+        return 'https://nprone.example.com/oauth2/callback';
     }
 
     /**

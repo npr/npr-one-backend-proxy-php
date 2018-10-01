@@ -61,7 +61,7 @@ Additionally, we highly recommend doing your development with [Xdebug enabled](h
 
 ### Coding Style
 
-We follow the [PSR-1](http://www.php-fig.org/psr/psr-1/) basic coding standards and [PSR-2](http://www.php-fig.org/psr/psr-2/) coding style guide, with the following addenda, exceptions, and clarifications:
+We follow the [PSR-1](https://www.php-fig.org/psr/psr-1/) basic coding standards and [PSR-2](https://www.php-fig.org/psr/psr-2/) coding style guide, with the following addenda, exceptions, and clarifications:
 
 * All variables/property names should be in `$camelCase` only.
 * We put all opening curly braces on their own separate line, even for control structures.
@@ -82,7 +82,7 @@ XML files are also generated for reporting test results and coverage on a CI ser
 
 ### Generating Documentation
 
-We are using [phpDocumentor](http://www.phpdoc.org) paired with the [phpdoc-md](https://github.com/evert/phpdoc-md) plugin to generate documentation in Markdown based on the contents of our PHPDoc blocks. To generate or update the documentation, use:
+We are using [phpDocumentor](https://www.phpdoc.org) paired with the [phpdoc-md](https://github.com/evert/phpdoc-md) plugin to generate documentation in Markdown based on the contents of our PHPDoc blocks. To generate or update the documentation, use:
 
 ```
 ./vendor/bin/phpdoc

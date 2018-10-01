@@ -118,7 +118,7 @@ class EncryptionProvider implements EncryptionInterface
      * may not be available on your system. For a complete list of possible inputs, call `openssl_get_cipher_methods()`
      * on your server; results will vary by environment.
      *
-     * @see http://php.net/manual/en/function.openssl-get-cipher-methods.php
+     * @see https://php.net/manual/en/function.openssl-get-cipher-methods.php
      *
      * @param string $cipherMethod
      * @throws \InvalidArgumentException if the passed-in value is not a non-empty string
