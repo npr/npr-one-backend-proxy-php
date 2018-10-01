@@ -1,6 +1,6 @@
 Copyright (c) 2016 NPR
 
-Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/License-2.0) (the “License”) with the following modification; You may not use this file except in compliance with the License as modified by the addition of Section 10, as follows:
+Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) (the “License”) with the following modification; You may not use this file except in compliance with the License as modified by the addition of Section 10, as follows:
 
 ##### 10. Additional Prohibitions
 
@@ -12,6 +12,6 @@ b.	Remove, obscure or alter any NPR terms of service, including the [NPR service
 
 c.	Take any other action prohibited by any NPR terms of service, including the [NPR services Terms of Use](https://www.npr.org/about-npr/179876898/terms-of-use) and the [Developer API Terms of Use](https://dev.npr.org/terms-of-use/).
 
-You may obtain a copy of the License at http://www.apache.org/licenses/License-2.0
+You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License with the above modification is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.
