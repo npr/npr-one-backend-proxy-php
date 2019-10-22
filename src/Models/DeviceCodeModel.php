@@ -62,7 +62,7 @@ class DeviceCodeModel extends JsonModel
      *
      * @return string
      */
-    public function getDeviceCode()
+    public function getDeviceCode(): string
     {
         return $this->deviceCode;
     }
@@ -73,7 +73,7 @@ class DeviceCodeModel extends JsonModel
      *
      * @return string
      */
-    public function getUserCode()
+    public function getUserCode(): string
     {
         return $this->userCode;
     }
@@ -83,7 +83,7 @@ class DeviceCodeModel extends JsonModel
      *
      * @return string
      */
-    public function getVerificationUri()
+    public function getVerificationUri(): string
     {
         return $this->verificationUri;
     }
@@ -94,7 +94,7 @@ class DeviceCodeModel extends JsonModel
      *
      * @return int
      */
-    public function getExpiresIn()
+    public function getExpiresIn(): int
     {
         return $this->expiresIn;
     }
@@ -105,7 +105,7 @@ class DeviceCodeModel extends JsonModel
      *
      * @return int
      */
-    public function getInterval()
+    public function getInterval(): int
     {
         return $this->interval;
     }

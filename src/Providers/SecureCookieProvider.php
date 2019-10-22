@@ -41,7 +41,7 @@ class SecureCookieProvider extends CookieProvider
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get($key): ?string
     {
         $value = parent::get($key);
         if (!empty($value))

@@ -54,7 +54,7 @@ class AccessTokenModel extends JsonModel
      *
      * @return string
      */
-    public function getAccessToken()
+    public function getAccessToken(): string
     {
         return $this->accessToken;
     }
@@ -64,7 +64,7 @@ class AccessTokenModel extends JsonModel
      *
      * @return string
      */
-    public function getTokenType()
+    public function getTokenType(): string
     {
         return $this->tokenType;
     }
@@ -74,7 +74,7 @@ class AccessTokenModel extends JsonModel
      *
      * @return int
      */
-    public function getExpiresIn()
+    public function getExpiresIn(): int
     {
         return $this->expiresIn;
     }
@@ -84,7 +84,7 @@ class AccessTokenModel extends JsonModel
      *
      * @return null|string
      */
-    public function getRefreshToken()
+    public function getRefreshToken(): ?string
     {
         return $this->refreshToken;
     }

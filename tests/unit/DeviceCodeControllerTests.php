@@ -1,19 +1,14 @@
 <?php
 
-use GuzzleHttp\Client;
+use GuzzleHttp\{Client, HandlerStack};
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 
 use NPR\One\Controllers\DeviceCodeController;
 use NPR\One\DI\DI;
 use NPR\One\Interfaces\ConfigInterface;
-use NPR\One\Models\AccessTokenModel;
-use NPR\One\Models\DeviceCodeModel;
-use NPR\One\Providers\CookieProvider;
-use NPR\One\Providers\EncryptionProvider;
-use NPR\One\Providers\SecureCookieProvider;
-
+use NPR\One\Models\{AccessTokenModel, DeviceCodeModel};
+use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
 class DeviceCodeControllerTests extends PHPUnit_Framework_TestCase
 {

@@ -2,8 +2,7 @@
 
 namespace NPR\One\Exceptions;
 
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Stream;
+use GuzzleHttp\Psr7\{Response, Stream};
 
 
 /**
@@ -51,7 +50,7 @@ class ApiException extends \Exception
      *
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
@@ -61,7 +60,7 @@ class ApiException extends \Exception
      *
      * @return string
      */
-    public function getStatusText()
+    public function getStatusText(): string
     {
         return $this->statusText;
     }
@@ -71,7 +70,7 @@ class ApiException extends \Exception
      *
      * @return Stream
      */
-    public function getBody()
+    public function getBody(): Stream
     {
         return $this->body;
     }

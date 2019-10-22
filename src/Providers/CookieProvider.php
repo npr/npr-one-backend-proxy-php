@@ -44,7 +44,7 @@ class CookieProvider implements StorageInterface
      * @return string|null
      * @codeCoverageIgnore
      */
-    public function get($key)
+    public function get($key): ?string
     {
         return isset($_COOKIE[$this->keyPrefix . $key]) ? $_COOKIE[$this->keyPrefix . $key] : null;
     }
@@ -54,7 +54,7 @@ class CookieProvider implements StorageInterface
      *
      * @codeCoverageIgnore
      */
-    public function compare($key, $value)
+    public function compare($key, $value): bool
     {
         return $this->get($key) === $value;
     }

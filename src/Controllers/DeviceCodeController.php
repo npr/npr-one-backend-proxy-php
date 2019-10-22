@@ -5,9 +5,7 @@ namespace NPR\One\Controllers;
 use GuzzleHttp\Client;
 use NPR\One\DI\DI;
 use NPR\One\Exceptions\ApiException;
-use NPR\One\Models\AccessTokenModel;
-use NPR\One\Models\DeviceCodeModel;
-
+use NPR\One\Models\{AccessTokenModel, DeviceCodeModel};
 
 /**
  * Use this controller to power your OAuth2 proxy if you are using the `device_code` grant.
@@ -29,7 +27,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function startDeviceCodeGrant(array $scopes)
+    public function startDeviceCodeGrant(array $scopes): DeviceCodeModel
     {
         $this->ensureExternalProvidersExist();
 
@@ -51,7 +49,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function pollDeviceCodeGrant()
+    public function pollDeviceCodeGrant(): AccessTokenModel
     {
         $this->ensureExternalProvidersExist();
 
@@ -81,7 +79,7 @@ class DeviceCodeController extends AbstractOAuth2Controller
      * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function createDeviceCode(array $scopes)
+    private function createDeviceCode(array $scopes): DeviceCodeModel
     {
         /** @var Client $client */
         $client = DI::container()->get(Client::class);

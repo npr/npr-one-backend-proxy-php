@@ -24,7 +24,7 @@ class RefreshTokenController extends AbstractOAuth2Controller
      * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function generateNewAccessTokenFromRefreshToken()
+    public function generateNewAccessTokenFromRefreshToken(): AccessTokenModel
     {
         $this->ensureExternalProvidersExist();
 

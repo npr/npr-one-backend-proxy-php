@@ -4,9 +4,7 @@ namespace NPR\One\DI;
 
 use DI\ContainerBuilder;
 use GuzzleHttp\Client;
-use NPR\One\Providers\CookieProvider;
-use NPR\One\Providers\SecureCookieProvider;
-use NPR\One\Providers\EncryptionProvider;
+use NPR\One\Providers\{CookieProvider, SecureCookieProvider, EncryptionProvider};
 
 
 /**

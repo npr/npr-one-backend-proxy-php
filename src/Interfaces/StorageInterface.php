@@ -25,7 +25,7 @@ interface StorageInterface
      * @param string $key
      * @return mixed
      */
-    public function get($key);
+    public function get($key): mixed;
 
     /**
      * The provided $key should be used to lookup a value and then compare
@@ -35,7 +35,7 @@ interface StorageInterface
      * @param mixed $value
      * @return bool
      */
-    public function compare($key, $value);
+    public function compare($key, $value): bool;
 
     /**
      * Remove all data associated with a given key
