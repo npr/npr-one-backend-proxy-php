@@ -25,7 +25,7 @@ interface StorageInterface
      * @param string $key
      * @return mixed
      */
-    public function get($key): mixed;
+    public function get($key);
 
     /**
      * The provided $key should be used to lookup a value and then compare
