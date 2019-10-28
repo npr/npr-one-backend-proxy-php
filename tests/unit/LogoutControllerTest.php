@@ -30,7 +30,7 @@ class LogoutControllerTests extends TestCase
     private static $clientCredentialsToken = 'rWlf1a84WB09R0H65D8Q6Mm8E3ttDWOKfakecc';
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
 

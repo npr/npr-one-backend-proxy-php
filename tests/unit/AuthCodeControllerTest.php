@@ -35,7 +35,7 @@ class AuthCodeControllerTests extends TestCase
     private static $clientId = 'fake_client_id';
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockCookie = $this->getMock(CookieProvider::class);
 

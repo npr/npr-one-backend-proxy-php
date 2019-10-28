@@ -55,6 +55,7 @@ vendor/
 
 # PHPUnit Results & Code Coverage
 test-results/
+.phpunit.result.cache
 
 # PHPDoc
 build/

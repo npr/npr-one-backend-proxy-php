@@ -6,17 +6,16 @@ use GuzzleHttp\Psr7\Response;
 
 use PHPUnit\Framework\TestCase;
 
-use NPR\One\Controllers\DeviceCodeController;
+use NPR\One\Controllers\RefreshTokenController;
 use NPR\One\DI\DI;
 use NPR\One\Interfaces\ConfigInterface;
-use NPR\One\Models\{AccessTokenModel, DeviceCodeModel};
+use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
-class DeviceCodeControllerTests extends TestCase
+class RefreshTokenControllerTests extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
-    const DEVICE_CODE_RESPONSE = '{"device_code":"IevXEi6eNBPemJA7OWCuBzQ3tua9iHyifakecode","user_code":"2OA7PP","verification_uri":"http:\/\/www.npr.org\/device","expires_in":1800,"interval":5}';
 
     /** @var SecureCookieProvider */
     private $mockSecureCookie;
@@ -31,7 +30,7 @@ class DeviceCodeControllerTests extends TestCase
     private static $clientId = 'fake_client_id';
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
 
@@ -58,8 +57,8 @@ class DeviceCodeControllerTests extends TestCase
      */
     public function testConfigProviderException()
     {
-        $controller = new DeviceCodeController();
-        $controller->startDeviceCodeGrant(['fake_scope']);
+        $controller = new RefreshTokenController();
+        $controller->generateNewAccessTokenFromRefreshToken();
     }
 
     /**
@@ -70,10 +69,10 @@ class DeviceCodeControllerTests extends TestCase
     {
         $mockCookie = $this->getMock(CookieProvider::class);
 
-        $controller = new DeviceCodeController();
+        $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setSecureStorageProvider($mockCookie);
-        $controller->startDeviceCodeGrant(['fake_scope']);
+        $controller->generateNewAccessTokenFromRefreshToken();
     }
 
     /**
@@ -85,35 +84,27 @@ class DeviceCodeControllerTests extends TestCase
         $mockEncryption = $this->getMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
-        $controller = new DeviceCodeController();
+        $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setEncryptionProvider($mockEncryption);
-        $controller->startDeviceCodeGrant(['fake_scope']);
+        $controller->generateNewAccessTokenFromRefreshToken();
     }
 
-    public function testStartDeviceCodeGrant()
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage   Could not locate a refresh token
+     */
+    public function testGenerateNewAccessTokenFromRefreshTokenMissingRefreshToken()
     {
-        $mock = new MockHandler([
-            new Response(200, [], self::DEVICE_CODE_RESPONSE),
-        ]);
-
-        $handler = HandlerStack::create($mock);
-        $client = new Client(['handler' => $handler]);
-
-        DI::container()->set(Client::class, $client);
-
-        $controller = new DeviceCodeController();
+        $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
-        $deviceCode = $controller->startDeviceCodeGrant(['fake_scope']);
-
-        $this->assertInstanceOf(DeviceCodeModel::class, $deviceCode, 'startDeviceCodeGrant response was not of type DeviceCodeModel: ' . print_r($deviceCode, 1));
-        $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
+        $controller->generateNewAccessTokenFromRefreshToken();
     }
 
     /**
      * @expectedException \Exception
      */
-    public function testStartDeviceCodeGrantWithApiException()
+    public function testGenerateNewAccessTokenFromRefreshTokenWithApiError()
     {
         $mock = new MockHandler([
             new Response(500, [], ''),
@@ -124,23 +115,14 @@ class DeviceCodeControllerTests extends TestCase
 
         DI::container()->set(Client::class, $client);
 
-        $controller = new DeviceCodeController();
+        $this->mockSecureCookie->method('get')->willReturn('i_am_a_refresh_token');
+
+        $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->startDeviceCodeGrant(['fake_scope']);
+        $controller->generateNewAccessTokenFromRefreshToken();
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage   Could not locate a device code
-     */
-    public function testPollDeviceCodeGrantMissingDeviceCode()
-    {
-        $controller = new DeviceCodeController();
-        $controller->setConfigProvider($this->mockConfig);
-        $controller->pollDeviceCodeGrant();
-    }
-
-    public function testPollDeviceCodeGrant()
+    public function testGenerateNewAccessTokenFromRefreshToken()
     {
         $mock = new MockHandler([
             new Response(200, [], self::ACCESS_TOKEN_RESPONSE),
@@ -151,17 +133,17 @@ class DeviceCodeControllerTests extends TestCase
 
         DI::container()->set(Client::class, $client);
 
-        $this->mockSecureCookie->method('get')->willReturn('i_am_a_device_code');
+        $this->mockSecureCookie->method('get')->willReturn('i_am_a_refresh_token');
 
-        $controller = new DeviceCodeController();
+        $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
-        $accessToken = $controller->pollDeviceCodeGrant();
+        $accessToken = $controller->generateNewAccessTokenFromRefreshToken();
 
-        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'pollDeviceCodeGrant response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'generateNewAccessTokenFromRefreshToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 
-    public function testPollDeviceCodeGrantNoRefreshToken()
+    public function testGenerateNewAccessTokenFromRefreshTokenNoNewRefreshToken()
     {
         $mock = new MockHandler([
             new Response(200, [], self::ACCESS_TOKEN_RESPONSE_2),
@@ -172,13 +154,13 @@ class DeviceCodeControllerTests extends TestCase
 
         DI::container()->set(Client::class, $client);
 
-        $this->mockSecureCookie->method('get')->willReturn('i_am_a_device_code');
+        $this->mockSecureCookie->method('get')->willReturn('i_am_a_refresh_token');
 
-        $controller = new DeviceCodeController();
+        $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
-        $accessToken = $controller->pollDeviceCodeGrant();
+        $accessToken = $controller->generateNewAccessTokenFromRefreshToken();
 
-        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'pollDeviceCodeGrant response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'generateNewAccessTokenFromRefreshToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 }

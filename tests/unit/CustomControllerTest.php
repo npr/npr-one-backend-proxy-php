@@ -6,13 +6,13 @@ use GuzzleHttp\Psr7\Response;
 
 use PHPUnit\Framework\TestCase;
 
-use NPR\One\Controllers\RefreshTokenController;
+use NPR\One\Controllers\AbstractOAuth2Controller;
 use NPR\One\DI\DI;
 use NPR\One\Interfaces\ConfigInterface;
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
-class RefreshTokenControllerTests extends TestCase
+class CustomControllerTests extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
@@ -30,7 +30,7 @@ class RefreshTokenControllerTests extends TestCase
     private static $clientId = 'fake_client_id';
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
 
@@ -57,54 +57,80 @@ class RefreshTokenControllerTests extends TestCase
      */
     public function testConfigProviderException()
     {
-        $controller = new RefreshTokenController();
-        $controller->generateNewAccessTokenFromRefreshToken();
+        $controller = new CustomController();
+        $controller->issueAccessToken();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessageRegExp   #SecureStorageProvider must be set. See.*setSecureStorageProvider#
+     */
+    public function testSecureStorageProviderException()
+    {
+        $controller = new CustomController();
+        $controller->setConfigProvider($this->mockConfig);
+        $controller->issueAccessToken();
     }
 
     /**
      * @expectedException \RuntimeException
      * @expectedExceptionMessageRegExp   #WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#
      */
-    public function testSecureStorageProviderException()
+    public function testSecureStorageProviderWarning()
     {
         $mockCookie = $this->getMock(CookieProvider::class);
 
-        $controller = new RefreshTokenController();
+        $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setSecureStorageProvider($mockCookie);
-        $controller->generateNewAccessTokenFromRefreshToken();
+        $controller->issueAccessToken();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessageRegExp   #EncryptionProvider must be set. See.*setEncryptionProvider#
+     */
+    public function testEncryptionProviderException()
+    {
+        $controller = new CustomController();
+        $controller->setConfigProvider($this->mockConfig);
+        $controller->setSecureStorageProvider($this->mockSecureCookie);
+        $controller->issueAccessToken();
     }
 
     /**
      * @expectedException \RuntimeException
      * @expectedExceptionMessageRegExp   #EncryptionProvider must be valid. See.*EncryptionInterface::isValid#
      */
-    public function testEncryptionProviderException()
+    public function testEncryptionProviderInvalidException()
     {
         $mockEncryption = $this->getMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
-        $controller = new RefreshTokenController();
+        $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
+        $controller->setSecureStorageProvider($this->mockSecureCookie);
         $controller->setEncryptionProvider($mockEncryption);
-        $controller->generateNewAccessTokenFromRefreshToken();
+        $controller->issueAccessToken();
     }
 
     /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage   Could not locate a refresh token
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage   Must specify grant type
      */
-    public function testGenerateNewAccessTokenFromRefreshTokenMissingRefreshToken()
+    public function testBadIssueAccessTokenMissingGrantType()
     {
-        $controller = new RefreshTokenController();
+        $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->generateNewAccessTokenFromRefreshToken();
+        $controller->setSecureStorageProvider($this->mockSecureCookie);
+        $controller->setEncryptionProvider($this->mockEncryption);
+        $controller->badIssueAccessToken();
     }
 
     /**
      * @expectedException \Exception
      */
-    public function testGenerateNewAccessTokenFromRefreshTokenWithApiError()
+    public function testIssueAccessTokenWithApiError()
     {
         $mock = new MockHandler([
             new Response(500, [], ''),
@@ -112,17 +138,14 @@ class RefreshTokenControllerTests extends TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-
         DI::container()->set(Client::class, $client);
 
-        $this->mockSecureCookie->method('get')->willReturn('i_am_a_refresh_token');
-
-        $controller = new RefreshTokenController();
+        $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->generateNewAccessTokenFromRefreshToken();
+        $controller->issueAccessToken();
     }
 
-    public function testGenerateNewAccessTokenFromRefreshToken()
+    public function testIssueAccessToken()
     {
         $mock = new MockHandler([
             new Response(200, [], self::ACCESS_TOKEN_RESPONSE),
@@ -130,20 +153,19 @@ class RefreshTokenControllerTests extends TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-
         DI::container()->set(Client::class, $client);
 
-        $this->mockSecureCookie->method('get')->willReturn('i_am_a_refresh_token');
-
-        $controller = new RefreshTokenController();
+        $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
-        $accessToken = $controller->generateNewAccessTokenFromRefreshToken();
+        $controller->setSecureStorageProvider($this->mockSecureCookie);
+        $controller->setEncryptionProvider($this->mockEncryption);
+        $accessToken = $controller->issueAccessToken();
 
-        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'generateNewAccessTokenFromRefreshToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 
-    public function testGenerateNewAccessTokenFromRefreshTokenNoNewRefreshToken()
+    public function testIssueAccessTokenNoRefreshToken()
     {
         $mock = new MockHandler([
             new Response(200, [], self::ACCESS_TOKEN_RESPONSE_2),
@@ -151,16 +173,45 @@ class RefreshTokenControllerTests extends TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-
         DI::container()->set(Client::class, $client);
 
-        $this->mockSecureCookie->method('get')->willReturn('i_am_a_refresh_token');
-
-        $controller = new RefreshTokenController();
+        $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
-        $accessToken = $controller->generateNewAccessTokenFromRefreshToken();
+        $controller->setSecureStorageProvider($this->mockSecureCookie);
+        $controller->setEncryptionProvider($this->mockEncryption);
+        $accessToken = $controller->issueAccessToken();
 
-        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'generateNewAccessTokenFromRefreshToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
         $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
+    }
+}
+
+class CustomController extends AbstractOAuth2Controller
+{
+    public function __construct()
+    {
+        // intentionally don't call parent constructor
+    }
+
+    public function issueAccessToken()
+    {
+        $this->ensureExternalProvidersExist();
+
+        $accessToken = $this->createAccessToken('fake_grant_type');
+
+        $this->storeRefreshToken($accessToken);
+
+        return $accessToken;
+    }
+
+    public function badIssueAccessToken()
+    {
+        $this->ensureExternalProvidersExist();
+
+        $accessToken = $this->createAccessToken(null);
+
+        $this->storeRefreshToken($accessToken);
+
+        return $accessToken;
     }
 }
