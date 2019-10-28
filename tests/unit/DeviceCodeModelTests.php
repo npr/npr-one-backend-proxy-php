@@ -1,9 +1,11 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 use NPR\One\Models\DeviceCodeModel;
 
 
-class DeviceCodeModelTests extends PHPUnit_Framework_TestCase
+class DeviceCodeModelTests extends TestCase
 {
     const DEVICE_CODE_RESPONSE = '{"device_code":"IevXEi6eNBPemJA7OWCuBzQ3tua9iHyifakecode","user_code":"2OA7PP","verification_uri":"http:\/\/www.npr.org\/device","expires_in":1800,"interval":5}';
 

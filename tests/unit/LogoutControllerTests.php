@@ -4,12 +4,14 @@ use GuzzleHttp\{Client, HandlerStack};
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 
+use PHPUnit\Framework\TestCase;
+
 use NPR\One\Controllers\LogoutController;
 use NPR\One\DI\DI;
 use NPR\One\Interfaces\ConfigInterface;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
-class LogoutControllerTests extends PHPUnit_Framework_TestCase
+class LogoutControllerTests extends TestCase
 {
     /** @var SecureCookieProvider */
     private $mockSecureCookie;

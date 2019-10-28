@@ -1,9 +1,10 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 use NPR\One\Models\AccessTokenModel;
 
-
-class AccessTokenModelTests extends PHPUnit_Framework_TestCase
+class AccessTokenModelTests extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
 

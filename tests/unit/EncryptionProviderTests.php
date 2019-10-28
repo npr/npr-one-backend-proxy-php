@@ -1,9 +1,9 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 use NPR\One\Providers\EncryptionProvider;
-
-
-class EncryptionProviderTests extends PHPUnit_Framework_TestCase
+class EncryptionProviderTests extends TestCase
 {
     private static $salt = 'I am a test salt';
     private static $salt2 = 'J=j<4\bL6Y_T!{="EeU@!Z5eEqe64Qv$<.9:eD/JHzv=puhj$`FNr5DBN"Ej';

@@ -1,9 +1,10 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 use NPR\One\Providers\CookieProvider;
 
-
-class CookieProviderTests extends PHPUnit_Framework_TestCase
+class CookieProviderTests extends TestCase
 {
     private static $domain = '.example.com';
     private static $keyPrefix = 'example_';
