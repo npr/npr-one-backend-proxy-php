@@ -41,7 +41,7 @@ class AuthCodeController extends AbstractOAuth2Controller
     /**
      * {@inheritdoc}
      */
-    public function setConfigProvider(ConfigInterface $configProvider)
+    public function setConfigProvider(ConfigInterface $configProvider): AuthCodeController
     {
         parent::setConfigProvider($configProvider);
         $this->cookies->setDomain($configProvider->getCookieDomain());
