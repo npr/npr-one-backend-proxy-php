@@ -18,7 +18,7 @@ interface EncryptionInterface
      *
      * @return boolean
      */
-    public function isValid(): boolean;
+    public function isValid(): bool;
 
     /**
      * Securely encrypts the given text.
