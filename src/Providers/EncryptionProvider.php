@@ -71,7 +71,7 @@ class EncryptionProvider implements EncryptionInterface
      * {@inheritdoc}
      * @throws \Exception
      */
-    public function decrypt($value): ?string
+    public function decrypt($value): string
     {
         if (empty($value))
         {
