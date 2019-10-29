@@ -50,10 +50,13 @@ class AuthCodeControllerTests extends TestCase
 
         $this->mockConfig = $this->getMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
+        $this->mockConfig->method('getClientSecret')->willReturn('');
+        $this->mockConfig->method('getClientCredentialsToken')->willReturn('');
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getClientUrl')->willReturn('https://one.example.com');
         $this->mockConfig->method('getAuthCodeCallbackUrl')->willReturn('https://one.example.com/oauth2/callback');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
+        $this->mockConfig->method('getCookiePrefix')->willReturn('.example.com');
         $this->mockConfig->method('getEncryptionSalt')->willReturn('asYh&%D9ne!j8HKQ');
 
         $this->mockClient = new Client(['handler' => HandlerStack::create(new MockHandler())]);
