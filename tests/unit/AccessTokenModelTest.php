@@ -10,7 +10,7 @@ class AccessTokenModelTest extends TestCase
 
 
     /**
-     * expectException() \Exception
+     * @expectedException \Exception
      */
     public function testJsonModelCreationFail()
     {
@@ -18,7 +18,7 @@ class AccessTokenModelTest extends TestCase
     }
 
     /**
-     * expectException() \Exception
+     * @expectedException \Exception
      */
     public function testModelCreationFail()
     {

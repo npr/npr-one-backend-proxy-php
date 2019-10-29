@@ -11,14 +11,16 @@ class CookieProviderTest extends TestCase
 
 
     /**
-     * expectException() \InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testSetDomainWithArgumentOfWrongType()
     {
         $provider = new CookieProvider();
         $provider->setDomain(new \stdClass());
     }
-
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSetDomain()
     {
         $provider = new CookieProvider();
@@ -26,7 +28,9 @@ class CookieProviderTest extends TestCase
 
         // nothing really to do here, just verifying that it doesn't throw an exception
     }
-
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSetDomainWithEmptyArgument()
     {
         $provider = new CookieProvider();
@@ -36,7 +40,7 @@ class CookieProviderTest extends TestCase
     }
 
     /**
-     * expectException() \InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testSetKeyPrefixWithEmptyArgument()
     {
@@ -45,14 +49,16 @@ class CookieProviderTest extends TestCase
     }
 
     /**
-     * expectException() \InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testSetKeyPrefixWithArgumentOfWrongType()
     {
         $provider = new CookieProvider();
         $provider->setKeyPrefix(new \stdClass());
     }
-
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSetKeyPrefix()
     {
         $provider = new CookieProvider();

@@ -32,7 +32,7 @@ class CustomControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
+        $this->mockSecureCookie = $this->getMockFromWsdl(SecureCookieProvider::class);
 
         $this->mockEncryption = $this->getMock(EncryptionProvider::class);
         $this->mockEncryption->method('isValid')->willReturn(true);

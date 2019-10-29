@@ -11,7 +11,7 @@ class DeviceCodeModelTest extends TestCase
 
 
     /**
-     * expectException() \Exception
+     * @expectedException \Exception
      */
     public function testJsonModelCreationFail()
     {
@@ -19,7 +19,7 @@ class DeviceCodeModelTest extends TestCase
     }
 
     /**
-     * expectException() \Exception
+     * @expectedException \Exception
      */
     public function testModelCreationFail()
     {

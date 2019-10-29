@@ -37,7 +37,7 @@ class AuthCodeControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->mockCookie = $this->getMock(CookieProvider::class);
+        $this->mockCookie = $this->getMockFromWsdl(CookieProvider::class);
 
         $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
 
