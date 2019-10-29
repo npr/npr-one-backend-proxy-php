@@ -3,14 +3,14 @@
 use PHPUnit\Framework\TestCase;
 
 use NPR\One\Providers\EncryptionProvider;
-class EncryptionProviderTests extends TestCase
+class EncryptionProviderTest extends TestCase
 {
     private static $salt = 'I am a test salt';
     private static $salt2 = 'J=j<4\bL6Y_T!{="EeU@!Z5eEqe64Qv$<.9:eD/JHzv=puhj$`FNr5DBN"Ej';
 
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetSaltWithEmptyArgument()
     {
@@ -19,7 +19,7 @@ class EncryptionProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetSaltWithArgumentOfWrongType()
     {
@@ -57,7 +57,7 @@ class EncryptionProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testEncryptWithEmptyArgument()
     {
@@ -68,7 +68,7 @@ class EncryptionProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testEncryptWithArgumentOfWrongType()
     {
@@ -92,11 +92,11 @@ class EncryptionProviderTests extends TestCase
 
         $encryptedText = $provider->encrypt($originalText);
 
-        $this->assertInternalType('string', $encryptedText, 'The encrypted value should be a string');
+        $this->assertIsString('string', $encryptedText, 'The encrypted value should be a string');
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testDecryptWithEmptyArgument()
     {
@@ -107,7 +107,7 @@ class EncryptionProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testDecryptWithArgumentOfWrongType()
     {
@@ -172,7 +172,7 @@ class EncryptionProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetCipherMethodWithEmptyArgument()
     {
@@ -181,7 +181,7 @@ class EncryptionProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetCipherMethodWithArgumentOfWrongType()
     {
@@ -190,7 +190,7 @@ class EncryptionProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetCipherMethodWithInvalidCipher()
     {

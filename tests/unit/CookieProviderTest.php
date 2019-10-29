@@ -4,14 +4,14 @@ use PHPUnit\Framework\TestCase;
 
 use NPR\One\Providers\CookieProvider;
 
-class CookieProviderTests extends TestCase
+class CookieProviderTest extends TestCase
 {
     private static $domain = '.example.com';
     private static $keyPrefix = 'example_';
 
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetDomainWithArgumentOfWrongType()
     {
@@ -36,7 +36,7 @@ class CookieProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetKeyPrefixWithEmptyArgument()
     {
@@ -45,7 +45,7 @@ class CookieProviderTests extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * expectException() \InvalidArgumentException
      */
     public function testSetKeyPrefixWithArgumentOfWrongType()
     {

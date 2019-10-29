@@ -12,7 +12,7 @@ use NPR\One\Interfaces\ConfigInterface;
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
-class CustomControllerTests extends TestCase
+class CustomControllerTest extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';

@@ -53,6 +53,6 @@
         "phly/changelog-generator": "^2.1"
     },
     "scripts": {
-        "test:unit": "./vendor/phpunit/phpunit/phpunit -c ./phpunit.xml --testsuite=unit --verbose"
+        "test:unit": "./vendor/bin/phpunit tests/unit --verbose"
       }
 }

@@ -11,7 +11,7 @@ use NPR\One\DI\DI;
 use NPR\One\Interfaces\ConfigInterface;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
-class LogoutControllerTests extends TestCase
+class LogoutControllerTest extends TestCase
 {
     /** @var SecureCookieProvider */
     private $mockSecureCookie;

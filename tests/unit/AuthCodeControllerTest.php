@@ -13,7 +13,7 @@ use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
 
-class AuthCodeControllerTests extends TestCase
+class AuthCodeControllerTest extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
@@ -37,18 +37,18 @@ class AuthCodeControllerTests extends TestCase
 
     public function setUp(): void
     {
-        $this->mockCookie = $this->getMockBuilder(CookieProvider::class);
+        $this->mockCookie = $this->getMock(CookieProvider::class);
 
-        $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class);
+        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
 
-        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class);
+        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockStorage = $this->getMockBuilder(StorageInterface::class);
+        $this->mockStorage = $this->getMock(StorageInterface::class);
         $this->mockStorage->method('compare')->willReturn(true);
 
-        $this->mockConfig = $this->getMockBuilder(ConfigInterface::class);
+        $this->mockConfig = $this->getMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
         $this->mockConfig->method('getClientSecret')->willReturn('');
         $this->mockConfig->method('getClientCredentialsToken')->willReturn('');
