@@ -11,19 +11,21 @@ class DeviceCodeModelTest extends TestCase
 
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      */
     public function testJsonModelCreationFail()
     {
-        new DeviceCodeModel('I am not JSON');
+        $this->expectException(\Exception::class);
+        throw new DeviceCodeModel('I am not JSON');
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      */
     public function testModelCreationFail()
     {
-        new DeviceCodeModel('{"device_code":"blah"}');
+        $this->expectException(\Exception::class);
+        throw new DeviceCodeModel('{"device_code":"blah"}');
     }
 
     public function testCorrectlyPopulatedModel()

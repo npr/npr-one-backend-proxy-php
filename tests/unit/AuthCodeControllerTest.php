@@ -37,18 +37,18 @@ class AuthCodeControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->mockCookie = $this->getMockFromWsdl(CookieProvider::class);
+        $this->mockCookie = $this->getMockBuilder(CookieProvider::class)->getMock();
 
-        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
+        $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
-        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
+        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->setMethods(['isValid', 'set'])->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockStorage = $this->getMock(StorageInterface::class);
+        $this->mockStorage = $this->getMockForAbstractClass(StorageInterface::class);
         $this->mockStorage->method('compare')->willReturn(true);
 
-        $this->mockConfig = $this->getMock(ConfigInterface::class);
+        $this->mockConfig = $this->getMockForAbstractClass(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
         $this->mockConfig->method('getClientSecret')->willReturn('');
         $this->mockConfig->method('getClientCredentialsToken')->willReturn('');

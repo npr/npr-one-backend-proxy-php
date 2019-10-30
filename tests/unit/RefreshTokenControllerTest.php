@@ -32,13 +32,13 @@ class RefreshTokenControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->mockSecureCookie = $this->getMockForTrait(SecureCookieProvider::class);
+        $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
-        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
+        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockConfig = $this->getMock(ConfigInterface::class);
+        $this->mockConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');

@@ -10,19 +10,21 @@ class EncryptionProviderTest extends TestCase
 
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testSetSaltWithEmptyArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setSalt(null);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testSetSaltWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setSalt(new \stdClass());
     }
@@ -57,10 +59,11 @@ class EncryptionProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testEncryptWithEmptyArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
 
@@ -68,10 +71,11 @@ class EncryptionProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testEncryptWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
 
@@ -96,10 +100,12 @@ class EncryptionProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testDecryptWithEmptyArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
 
@@ -107,10 +113,12 @@ class EncryptionProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testDecryptWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
 
@@ -172,25 +180,29 @@ class EncryptionProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testSetCipherMethodWithEmptyArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $provider = new EncryptionProvider();
         $provider->setCipherMethod(null);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testSetCipherMethodWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $provider = new EncryptionProvider();
         $provider->setCipherMethod(new \stdClass());
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testSetCipherMethodWithInvalidCipher()
     {
@@ -198,6 +210,7 @@ class EncryptionProviderTest extends TestCase
         {
             $this->markTestSkipped('openssl is not loaded, so this test cannot be run');
         }
+        $this->expectException(\InvalidArgumentException::class);
 
         $provider = new EncryptionProvider();
         $provider->setCipherMethod('I-am-not-a-real-cipher');

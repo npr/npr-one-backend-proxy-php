@@ -10,19 +10,21 @@ class AccessTokenModelTest extends TestCase
 
 
     /**
-     * @expectedException \Exception
+     * expectException() \Exception
      */
     public function testJsonModelCreationFail()
     {
-        new AccessTokenModel('I am not JSON');
+        $this->expectException(\Exception::class);
+        throw new AccessTokenModel('I am not JSON');
     }
 
     /**
-     * @expectedException \Exception
+     * expectException() \Exception
      */
     public function testModelCreationFail()
     {
-        new AccessTokenModel('{"access_token":"faketoken"}');
+        $this->expectException(\Exception::class);
+        throw new AccessTokenModel('{"access_token":"faketoken"}');
     }
 
     public function testCorrectlyPopulatedModel()

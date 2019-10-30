@@ -33,9 +33,9 @@ class DeviceCodeControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->mockSecureCookie = $this->getMockForTrait(SecureCookieProvider::class);
+        $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
-        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
+        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
@@ -53,22 +53,25 @@ class DeviceCodeControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #ConfigProvider must be set. See.*setConfigProvider#
+     * Expect exception type \RuntimeException
+     * Expect exception message regular expression  #ConfigProvider must be set. See.*setConfigProvider#
      */
     public function testConfigProviderException()
     {
+        $this->expectException(\RuntimeException::class);
         $controller = new DeviceCodeController();
         $controller->startDeviceCodeGrant(['fake_scope']);
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type \RuntimeException
      * @expectedExceptionMessageRegExp   #WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#
      */
     public function testSecureStorageProviderException()
     {
         $mockCookie = $this->getMock(CookieProvider::class);
+
+        $this->expectException(\RuntimeException::class);
 
         $controller = new DeviceCodeController();
         $controller->setConfigProvider($this->mockConfig);
@@ -77,13 +80,15 @@ class DeviceCodeControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type \RuntimeException
      * @expectedExceptionMessageRegExp   #EncryptionProvider must be valid. See.*EncryptionInterface::isValid#
      */
     public function testEncryptionProviderException()
     {
         $mockEncryption = $this->getMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
+
+        $this->expectException(\RuntimeException::class);
 
         $controller = new DeviceCodeController();
         $controller->setConfigProvider($this->mockConfig);
@@ -111,7 +116,7 @@ class DeviceCodeControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      */
     public function testStartDeviceCodeGrantWithApiException()
     {
@@ -123,6 +128,7 @@ class DeviceCodeControllerTest extends TestCase
         $client = new Client(['handler' => $handler]);
 
         DI::container()->set(Client::class, $client);
+        $this->expectException(\Exception::class);
 
         $controller = new DeviceCodeController();
         $controller->setConfigProvider($this->mockConfig);
@@ -130,11 +136,13 @@ class DeviceCodeControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      * @expectedExceptionMessage   Could not locate a device code
      */
     public function testPollDeviceCodeGrantMissingDeviceCode()
     {
+        $this->expectException(\Exception::class);
+
         $controller = new DeviceCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->pollDeviceCodeGrant();
