@@ -274,14 +274,14 @@ class AuthCodeControllerTest extends TestCase
 
         DI::container()->set(Client::class, $client);
 
-        $mockStorage = $this->getMock(StorageInterface::class);
+        $mockStorage = $this->createMock(StorageInterface::class);
         $mockStorage->method('compare')->willReturn(false);
 
         $this->expectException(\Exception::class);
 
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->setStorageProvider($mockStorage);
+        $controller->setStorageProvider($this->mockStorage);
 
         $controller->completeAuthorizationGrant('fake_grant_code', 'fake:state');
     }
