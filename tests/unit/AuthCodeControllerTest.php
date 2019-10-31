@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 use NPR\One\Controllers\AuthCodeController;
 use NPR\One\DI\DI;
-use NPR\One\Interfaces\{ConfigInterface, StorageInterface};
+use NPR\One\Interfaces\{ConfigInterface, EncryptionInterface, StorageInterface};
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
@@ -26,6 +26,8 @@ class AuthCodeControllerTest extends TestCase
     private $mockEncryption;
     /** @var StorageInterface */
     private $mockStorage;
+     /** @var EncryptionInterface */
+     private $mockEncrypt;
     /** @var ConfigInterface */
     private $mockConfig;
     /** @var Client */
@@ -47,6 +49,9 @@ class AuthCodeControllerTest extends TestCase
 
         $this->mockStorage = $this->createMock(StorageInterface::class);
         $this->mockStorage->method('compare')->willReturn(true);
+
+        $this->mockEncrypt = $this->createMock(EncryptionInterface::class);
+        $this->mockEncrypt->method('isValid')->willReturn(false);
 
         $this->mockConfig = $this->createMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
@@ -125,14 +130,14 @@ class AuthCodeControllerTest extends TestCase
      */
     public function testEncryptionProviderException()
     {
-        $mockEncryption = $this->getMock(EncryptionProvider::class);
+        $mockEncryption = $this->createMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\Error::class);
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
-        $controller->setEncryptionProvider($mockEncryption);
+        $controller->setEncryptionProvider($this->mockEncrypt);
         $controller->startAuthorizationGrant(['fake_scope']);
     }
 
