@@ -34,11 +34,11 @@ class RefreshTokenControllerTest extends TestCase
     {
         $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
-        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->getMock();
+        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->setMethods(['isValid', 'set'])->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
+        $this->mockConfig = $this->createMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
@@ -52,22 +52,25 @@ class RefreshTokenControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #ConfigProvider must be set. See.*setConfigProvider#
      */
     public function testConfigProviderException()
     {
+        $this->expectException(\RuntimeException::class);
         $controller = new RefreshTokenController();
         $controller->generateNewAccessTokenFromRefreshToken();
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#
      */
     public function testSecureStorageProviderException()
     {
         $mockCookie = $this->getMock(CookieProvider::class);
+
+        $this->expectException(\RuntimeException::class);
 
         $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
@@ -76,13 +79,15 @@ class RefreshTokenControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #EncryptionProvider must be valid. See.*EncryptionInterface::isValid#
      */
     public function testEncryptionProviderException()
     {
         $mockEncryption = $this->getMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
+
+        $this->expectException(\RuntimeException::class);
 
         $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
@@ -91,18 +96,20 @@ class RefreshTokenControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type\Exception
      * @expectedExceptionMessage   Could not locate a refresh token
      */
     public function testGenerateNewAccessTokenFromRefreshTokenMissingRefreshToken()
     {
+        $this->expectException(\Exception::class);
+
         $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->generateNewAccessTokenFromRefreshToken();
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type\Exception
      */
     public function testGenerateNewAccessTokenFromRefreshTokenWithApiError()
     {
@@ -116,6 +123,7 @@ class RefreshTokenControllerTest extends TestCase
         DI::container()->set(Client::class, $client);
 
         $this->mockSecureCookie->method('get')->willReturn('i_am_a_refresh_token');
+        $this->expectException(\Exception::class);
 
         $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);

@@ -35,11 +35,11 @@ class DeviceCodeControllerTest extends TestCase
     {
         $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
-        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->getMock();
+        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->setMethods(['isValid', 'set'])->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockConfig = $this->getMock(ConfigInterface::class);
+        $this->mockConfig = $this->createMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');

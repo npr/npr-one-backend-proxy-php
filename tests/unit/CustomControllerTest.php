@@ -34,11 +34,11 @@ class CustomControllerTest extends TestCase
     {
         $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
-        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->getMock();
+        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->setMethods(['isValid', 'set'])->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockConfig = $this->getMock(ConfigInterface::class);
+        $this->mockConfig = $this->createMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
@@ -52,33 +52,39 @@ class CustomControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #ConfigProvider must be set. See.*setConfigProvider#
      */
     public function testConfigProviderException()
     {
+        $this->expectException(\RuntimeException::class);
+
         $controller = new CustomController();
         $controller->issueAccessToken();
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #SecureStorageProvider must be set. See.*setSecureStorageProvider#
      */
     public function testSecureStorageProviderException()
     {
+        $this->expectException(\RuntimeException::class);
+
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->issueAccessToken();
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#
      */
     public function testSecureStorageProviderWarning()
     {
         $mockCookie = $this->getMock(CookieProvider::class);
+
+        $this->expectException(\RuntimeException::class);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
@@ -87,11 +93,13 @@ class CustomControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #EncryptionProvider must be set. See.*setEncryptionProvider#
      */
     public function testEncryptionProviderException()
     {
+        $this->expectException(\RuntimeException::class);
+
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setSecureStorageProvider($this->mockSecureCookie);
@@ -99,13 +107,15 @@ class CustomControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type\RuntimeException
      * @expectedExceptionMessageRegExp   #EncryptionProvider must be valid. See.*EncryptionInterface::isValid#
      */
     public function testEncryptionProviderInvalidException()
     {
         $mockEncryption = $this->getMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
+
+        $this->expectException(\RuntimeException::class);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
@@ -115,11 +125,13 @@ class CustomControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type\InvalidArgumentException
      * @expectedExceptionMessage   Must specify grant type
      */
     public function testBadIssueAccessTokenMissingGrantType()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setSecureStorageProvider($this->mockSecureCookie);
@@ -128,7 +140,7 @@ class CustomControllerTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type\Exception
      */
     public function testIssueAccessTokenWithApiError()
     {
@@ -139,6 +151,8 @@ class CustomControllerTest extends TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         DI::container()->set(Client::class, $client);
+
+        $this->expectException(\Exception::class);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
