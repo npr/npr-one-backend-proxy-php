@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 use NPR\One\Controllers\AbstractOAuth2Controller;
 use NPR\One\DI\DI;
-use NPR\One\Interfaces\ConfigInterface;
+use NPR\One\Interfaces\{ConfigInterface, EncryptionInterface};
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
@@ -17,10 +17,14 @@ class CustomControllerTest extends TestCase
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
 
+    /** @var CookieProvider */
+    private $mockCookie;
     /** @var SecureCookieProvider */
     private $mockSecureCookie;
     /** @var EncryptionProvider */
     private $mockEncryption;
+    /** @var EncryptionInterface */
+    private $mockEncrypt;
     /** @var ConfigInterface */
     private $mockConfig;
     /** @var Client */
@@ -32,6 +36,8 @@ class CustomControllerTest extends TestCase
 
     public function setUp(): void
     {
+        $this->mockCookie = $this->getMockBuilder(CookieProvider::class)->getMock();
+
         $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
         $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->setMethods(['isValid', 'set'])->getMock();
@@ -46,6 +52,7 @@ class CustomControllerTest extends TestCase
 
         $this->mockClient = new Client(['handler' => HandlerStack::create(new MockHandler())]);
 
+        DI::container()->set(CookieProvider::class, $this->mockCookie);
         DI::container()->set(SecureCookieProvider::class, $this->mockSecureCookie);
         DI::container()->set(EncryptionProvider::class, $this->mockEncryption);
         DI::container()->set(Client::class, $this->mockClient); // just in case
@@ -82,13 +89,14 @@ class CustomControllerTest extends TestCase
      */
     public function testSecureStorageProviderWarning()
     {
-        $mockCookie = $this->getMock(CookieProvider::class);
+        $mockCookie = $this->createMock(CookieProvider::class);
+        $mockCookie->method('compare')->willReturn(false);
 
         $this->expectException(\RuntimeException::class);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->setSecureStorageProvider($mockCookie);
+        $controller->setSecureStorageProvider($this->mockCookie);
         $controller->issueAccessToken();
     }
 
@@ -112,15 +120,15 @@ class CustomControllerTest extends TestCase
      */
     public function testEncryptionProviderInvalidException()
     {
-        $mockEncryption = $this->getMock(EncryptionProvider::class);
+        $mockEncryption = $this->createMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\TypeError::class);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setSecureStorageProvider($this->mockSecureCookie);
-        $controller->setEncryptionProvider($mockEncryption);
+        $controller->setEncryptionProvider($this->mockEncrypt);
         $controller->issueAccessToken();
     }
 

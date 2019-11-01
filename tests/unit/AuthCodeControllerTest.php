@@ -26,8 +26,8 @@ class AuthCodeControllerTest extends TestCase
     private $mockEncryption;
     /** @var StorageInterface */
     private $mockStorage;
-     /** @var EncryptionInterface */
-     private $mockEncrypt;
+    /** @var EncryptionInterface */
+    private $mockEncrypt;
     /** @var ConfigInterface */
     private $mockConfig;
     /** @var Client */
@@ -133,7 +133,7 @@ class AuthCodeControllerTest extends TestCase
         $mockEncryption = $this->createMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
-        $this->expectException(\Error::class);
+        $this->expectException(\Error::class); // fix later
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);

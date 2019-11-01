@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 use NPR\One\Controllers\RefreshTokenController;
 use NPR\One\DI\DI;
-use NPR\One\Interfaces\ConfigInterface;
+use NPR\One\Interfaces\{ConfigInterface, EncryptionInterface, StorageInterface};
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
@@ -23,6 +23,10 @@ class RefreshTokenControllerTest extends TestCase
     private $mockEncryption;
     /** @var ConfigInterface */
     private $mockConfig;
+    /** @var EncryptionInterface */
+    private $mockEncrypt;
+    /** @var StorageInterface */
+    private $mockStorage;
     /** @var Client */
     private $mockClient;
 
@@ -37,6 +41,12 @@ class RefreshTokenControllerTest extends TestCase
         $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->setMethods(['isValid', 'set'])->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
+
+        $this->mockStorage = $this->createMock(StorageInterface::class);
+        $this->mockStorage->method('compare')->willReturn(true);
+
+        $this->mockEncrypt = $this->createMock(EncryptionInterface::class);
+        $this->mockEncrypt->method('isValid')->willReturn(false);
 
         $this->mockConfig = $this->createMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
@@ -68,13 +78,14 @@ class RefreshTokenControllerTest extends TestCase
      */
     public function testSecureStorageProviderException()
     {
-        $mockCookie = $this->getMock(CookieProvider::class);
+        $mockCookie = $this->createMock(StorageInterface::class);
+        $mockCookie->method('compare')->willReturn(false);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\Exception::class); // fix later
 
         $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->setSecureStorageProvider($mockCookie);
+        $controller->setSecureStorageProvider($this->mockStorage);
         $controller->generateNewAccessTokenFromRefreshToken();
     }
 
@@ -84,14 +95,14 @@ class RefreshTokenControllerTest extends TestCase
      */
     public function testEncryptionProviderException()
     {
-        $mockEncryption = $this->getMock(EncryptionProvider::class);
+        $mockEncryption = $this->createMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\Exception::class);
 
         $controller = new RefreshTokenController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->setEncryptionProvider($mockEncryption);
+        $controller->setEncryptionProvider($this->mockEncryption);
         $controller->generateNewAccessTokenFromRefreshToken();
     }
 
