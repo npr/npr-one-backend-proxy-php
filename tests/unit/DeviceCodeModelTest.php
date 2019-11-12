@@ -1,27 +1,31 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 use NPR\One\Models\DeviceCodeModel;
 
 
-class DeviceCodeModelTests extends PHPUnit_Framework_TestCase
+class DeviceCodeModelTest extends TestCase
 {
     const DEVICE_CODE_RESPONSE = '{"device_code":"IevXEi6eNBPemJA7OWCuBzQ3tua9iHyifakecode","user_code":"2OA7PP","verification_uri":"http:\/\/www.npr.org\/device","expires_in":1800,"interval":5}';
 
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      */
     public function testJsonModelCreationFail()
     {
-        new DeviceCodeModel('I am not JSON');
+        $this->expectException(\Exception::class);
+        throw new DeviceCodeModel('I am not JSON');
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      */
     public function testModelCreationFail()
     {
-        new DeviceCodeModel('{"device_code":"blah"}');
+        $this->expectException(\Exception::class);
+        throw new DeviceCodeModel('{"device_code":"blah"}');
     }
 
     public function testCorrectlyPopulatedModel()
@@ -41,10 +45,10 @@ class DeviceCodeModelTests extends PHPUnit_Framework_TestCase
         $model = new DeviceCodeModel(self::DEVICE_CODE_RESPONSE);
         $json = (string) $model;
 
-        $this->assertNotContains($model->getDeviceCode(), $json, 'Stringified device code model should not contain device code.');
-        $this->assertContains($model->getUserCode(), $json, 'Stringified device code model should contain user code.');
-        $this->assertContains(json_encode($model->getVerificationUri()), $json, 'Stringified device code model should contain verification URI.');
-        $this->assertContains((string) $model->getExpiresIn(), $json, 'Stringified device code model should contain code TTL.');
-        $this->assertContains((string) $model->getInterval(), $json, 'Stringified device code model should contain interval.');
+        $this->assertStringNotContainsString($model->getDeviceCode(), $json, 'Stringified device code model should not contain device code.');
+        $this->assertStringContainsString($model->getUserCode(), $json, 'Stringified device code model should contain user code.');
+        $this->assertStringContainsString(json_encode($model->getVerificationUri()), $json, 'Stringified device code model should contain verification URI.');
+        $this->assertStringContainsString((string) $model->getExpiresIn(), $json, 'Stringified device code model should contain code TTL.');
+        $this->assertStringContainsString((string) $model->getInterval(), $json, 'Stringified device code model should contain interval.');
     }
 }

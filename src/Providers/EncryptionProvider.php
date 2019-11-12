@@ -24,7 +24,7 @@ class EncryptionProvider implements EncryptionInterface
     /**
      * {@inheritdoc}
      */
-    public function isValid()
+    public function isValid(): bool
     {
         if (!extension_loaded('openssl') || !isset($this->salt))
         {
@@ -41,7 +41,7 @@ class EncryptionProvider implements EncryptionInterface
      * {@inheritdoc}
      * @throws \Exception
      */
-    public function encrypt($value)
+    public function encrypt($value): string
     {
         if (empty($value))
         {
@@ -71,7 +71,7 @@ class EncryptionProvider implements EncryptionInterface
      * {@inheritdoc}
      * @throws \Exception
      */
-    public function decrypt($value)
+    public function decrypt($value): string
     {
         if (empty($value))
         {

@@ -18,7 +18,7 @@ interface EncryptionInterface
      *
      * @return boolean
      */
-    public function isValid();
+    public function isValid(): bool;
 
     /**
      * Securely encrypts the given text.
@@ -27,7 +27,7 @@ interface EncryptionInterface
      * @return string
      * @throws \InvalidArgumentException if no value is passed in, or the value isn't a string
      */
-    public function encrypt($value);
+    public function encrypt($value): string;
 
     /**
      * Securely decrypts the given text.
@@ -36,5 +36,5 @@ interface EncryptionInterface
      * @return string
      * @throws \InvalidArgumentException if no value is passed in, or the value isn't a string
      */
-    public function decrypt($value);
+    public function decrypt($value): string;
 }

@@ -3,8 +3,7 @@
 namespace NPR\One\Controllers;
 
 use NPR\One\DI\DI;
-use NPR\One\Interfaces\ConfigInterface;
-use NPR\One\Interfaces\StorageInterface;
+use NPR\One\Interfaces\{ConfigInterface, StorageInterface};
 use NPR\One\Models\AccessTokenModel;
 use NPR\One\Providers\CookieProvider;
 
@@ -42,7 +41,7 @@ class AuthCodeController extends AbstractOAuth2Controller
     /**
      * {@inheritdoc}
      */
-    public function setConfigProvider(ConfigInterface $configProvider)
+    public function setConfigProvider(ConfigInterface $configProvider): AbstractOAuth2Controller
     {
         parent::setConfigProvider($configProvider);
         $this->cookies->setDomain($configProvider->getCookieDomain());
@@ -56,7 +55,7 @@ class AuthCodeController extends AbstractOAuth2Controller
      * @param StorageInterface $storageProvider
      * @return $this
      */
-    public function setStorageProvider(StorageInterface $storageProvider)
+    public function setStorageProvider(StorageInterface $storageProvider): AuthCodeController
     {
         $this->storage = $storageProvider;
         return $this;
@@ -81,7 +80,7 @@ class AuthCodeController extends AbstractOAuth2Controller
      *
      * @return string
      */
-    public function getRedirectUri()
+    public function getRedirectUri(): string
     {
         $this->ensureExternalProvidersExist();
 
@@ -97,7 +96,7 @@ class AuthCodeController extends AbstractOAuth2Controller
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function startAuthorizationGrant(array $scopes)
+    public function startAuthorizationGrant(array $scopes): string
     {
         $this->ensureExternalProvidersExist();
 
@@ -125,7 +124,7 @@ class AuthCodeController extends AbstractOAuth2Controller
      * @throws \Exception when state param is invalid
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function completeAuthorizationGrant($authorizationCode, $state)
+    public function completeAuthorizationGrant($authorizationCode, $state): AccessTokenModel
     {
         if (empty($authorizationCode) || !is_string($authorizationCode))
         {
@@ -159,7 +158,7 @@ class AuthCodeController extends AbstractOAuth2Controller
      * @internal
      * @return string
      */
-    private function generateOAuth2State()
+    private function generateOAuth2State(): string
     {
         $key = mt_rand();
         $value = mt_rand();

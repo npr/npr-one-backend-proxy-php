@@ -4,9 +4,7 @@ namespace NPR\One\DI;
 
 use DI\ContainerBuilder;
 use GuzzleHttp\Client;
-use NPR\One\Providers\CookieProvider;
-use NPR\One\Providers\SecureCookieProvider;
-use NPR\One\Providers\EncryptionProvider;
+use NPR\One\Providers\{CookieProvider, SecureCookieProvider, EncryptionProvider};
 
 
 /**
@@ -34,11 +32,11 @@ class DI
 
         $containerBuilder = new ContainerBuilder;
         $containerBuilder->addDefinitions([
-            CookieProvider::class       => \DI\object(CookieProvider::class),
-            SecureCookieProvider::class => \DI\object(SecureCookieProvider::class),
-            EncryptionProvider::class   => \DI\object(EncryptionProvider::class),
+            CookieProvider::class       => \DI\create(CookieProvider::class),
+            SecureCookieProvider::class => \DI\create(SecureCookieProvider::class),
+            EncryptionProvider::class   => \DI\create(EncryptionProvider::class),
             // Bind an interface to an implementation
-            Client::class               => \DI\object(Client::class)->constructor([
+            Client::class               => \DI\create(Client::class)->constructor([
                 'timeout'     => 5.0,
                 'http_errors' => false
             ]),

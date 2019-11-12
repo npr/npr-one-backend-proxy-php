@@ -15,14 +15,14 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getClientId();
+    public function getClientId(): string;
 
     /**
      * Returns the NPR One OAuth2 client secret, obtainable from the NPR One Developer Center's Developer Console
      *
      * @return string
      */
-    public function getClientSecret();
+    public function getClientSecret(): string;
 
     /**
      * Returns a single, static client credentials token associated with the same `client_id` from `getClientId()` above
@@ -39,7 +39,7 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getClientCredentialsToken();
+    public function getClientCredentialsToken(): string;
 
     /**
      * Returns the NPR One Authorization Service hostname, useful for testing on staging environments.
@@ -48,7 +48,7 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getNprAuthorizationServiceHost();
+    public function getNprAuthorizationServiceHost(): string;
 
     /**
      * Returns the host (or path) of the NPR One application (the client/frontend). This is where the `authorization_code`
@@ -60,7 +60,7 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getClientUrl();
+    public function getClientUrl(): string;
 
     /**
      * Returns the url of this backend proxy, corresponding specifically to the path that invokes `completeAuthorizationGrant()`
@@ -71,7 +71,7 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getAuthCodeCallbackUrl();
+    public function getAuthCodeCallbackUrl(): string;
 
     /**
      * Returns the custom domain to use for your cookies. If your cookies do not require a custom domain, have this
@@ -79,7 +79,7 @@ interface ConfigInterface
      *
      * @return string|null
      */
-    public function getCookieDomain();
+    public function getCookieDomain(): ?string;
 
     /**
      * If you have multiple proxies living on one server and are using the same cookie domain, you may need to be able
@@ -88,7 +88,7 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getCookiePrefix();
+    public function getCookiePrefix(): string;
 
     /**
      * Returns a salt to use for the default EncryptionProvider. If you are using your own custom secure storage provider
@@ -96,5 +96,5 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getEncryptionSalt();
+    public function getEncryptionSalt(): string;
 }

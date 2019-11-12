@@ -35,7 +35,7 @@ interface StorageInterface
      * @param mixed $value
      * @return bool
      */
-    public function compare($key, $value);
+    public function compare($key, $value): bool;
 
     /**
      * Remove all data associated with a given key

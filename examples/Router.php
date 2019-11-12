@@ -1,13 +1,9 @@
 <?php
 
 use Illuminate\Http\Response;
-use NPR\One\Controllers\AuthCodeController;
-use NPR\One\Controllers\DeviceCodeController;
-use NPR\One\Controllers\LogoutController;
-use NPR\One\Controllers\RefreshTokenController;
+use NPR\One\Controllers\{AuthCodeController, DeviceCodeController, LogoutController, RefreshTokenController};
 use NPR\One\Exceptions\ApiException;
-use Your\Package\Here\ConfigProvider;
-use Your\Package\Here\StorageProvider;
+use Your\Package\Here\{ConfigProvider, StorageProvider};
 
 
 /**

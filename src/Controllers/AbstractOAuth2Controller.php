@@ -5,13 +5,9 @@ namespace NPR\One\Controllers;
 use GuzzleHttp\Client;
 use NPR\One\DI\DI;
 use NPR\One\Exceptions\ApiException;
-use NPR\One\Interfaces\ConfigInterface;
-use NPR\One\Interfaces\EncryptionInterface;
-use NPR\One\Interfaces\StorageInterface;
+use NPR\One\Interfaces\{ConfigInterface, EncryptionInterface, StorageInterface};
 use NPR\One\Models\AccessTokenModel;
-use NPR\One\Providers\CookieProvider;
-use NPR\One\Providers\EncryptionProvider;
-use NPR\One\Providers\SecureCookieProvider;
+use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
 
 /**
@@ -64,7 +60,7 @@ abstract class AbstractOAuth2Controller
      *
      * @return string[]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -76,7 +72,7 @@ abstract class AbstractOAuth2Controller
      * @param ConfigInterface $configProvider
      * @return $this
      */
-    public function setConfigProvider(ConfigInterface $configProvider)
+    public function setConfigProvider(ConfigInterface $configProvider): AbstractOAuth2Controller
     {
         $this->config = $configProvider;
         return $this;
@@ -90,7 +86,7 @@ abstract class AbstractOAuth2Controller
      * @param StorageInterface $storageProvider
      * @return $this
      */
-    public function setSecureStorageProvider(StorageInterface $storageProvider)
+    public function setSecureStorageProvider(StorageInterface $storageProvider): AbstractOAuth2Controller
     {
         $this->secureStorage = $storageProvider;
         return $this;
@@ -105,7 +101,7 @@ abstract class AbstractOAuth2Controller
      * @param EncryptionInterface $encryptionProvider
      * @return $this
      */
-    public function setEncryptionProvider(EncryptionInterface $encryptionProvider)
+    public function setEncryptionProvider(EncryptionInterface $encryptionProvider): AbstractOauth2Controller
     {
         $this->encryption = $encryptionProvider;
         return $this;
@@ -162,7 +158,7 @@ abstract class AbstractOAuth2Controller
      * @internal
      * @return ConfigInterface
      */
-    final protected function getConfigProvider()
+    final protected function getConfigProvider(): ConfigInterface
     {
         return $this->config;
     }
@@ -173,7 +169,7 @@ abstract class AbstractOAuth2Controller
      * @internal
      * @return StorageInterface
      */
-    final protected function getSecureStorageProvider()
+    final protected function getSecureStorageProvider(): StorageInterface
     {
         return $this->secureStorage;
     }
@@ -214,7 +210,7 @@ abstract class AbstractOAuth2Controller
      * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    final protected function createAccessToken($grantType, $additionalParams = [])
+    final protected function createAccessToken($grantType, $additionalParams = []): AccessTokenModel
     {
         if (empty($grantType) || !is_string($grantType))
         {

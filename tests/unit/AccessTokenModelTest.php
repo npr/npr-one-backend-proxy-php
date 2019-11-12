@@ -1,27 +1,30 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 use NPR\One\Models\AccessTokenModel;
 
-
-class AccessTokenModelTests extends PHPUnit_Framework_TestCase
+class AccessTokenModelTest extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
 
 
     /**
-     * @expectedException \Exception
+     * expectException() \Exception
      */
     public function testJsonModelCreationFail()
     {
-        new AccessTokenModel('I am not JSON');
+        $this->expectException(\Exception::class);
+        throw new AccessTokenModel('I am not JSON');
     }
 
     /**
-     * @expectedException \Exception
+     * expectException() \Exception
      */
     public function testModelCreationFail()
     {
-        new AccessTokenModel('{"access_token":"faketoken"}');
+        $this->expectException(\Exception::class);
+        throw new AccessTokenModel('{"access_token":"faketoken"}');
     }
 
     public function testCorrectlyPopulatedModel()
@@ -53,9 +56,9 @@ class AccessTokenModelTests extends PHPUnit_Framework_TestCase
         $model = new AccessTokenModel(self::ACCESS_TOKEN_RESPONSE);
         $json = (string) $model;
 
-        $this->assertContains($model->getAccessToken(), $json, 'Stringified access token model should contain access token.');
-        $this->assertContains($model->getTokenType(), $json, 'Stringified access token model should contain token type.');
-        $this->assertContains((string) $model->getExpiresIn(), $json, 'Stringified access token model should contain token TTL.');
-        $this->assertNotContains($model->getRefreshToken(), $json, 'Stringified access token model should not contain refresh token.');
+        $this->assertStringContainsString($model->getAccessToken(), $json, 'Stringified access token model should contain access token.');
+        $this->assertStringContainsString($model->getTokenType(), $json, 'Stringified access token model should contain token type.');
+        $this->assertStringContainsString((string) $model->getExpiresIn(), $json, 'Stringified access token model should contain token TTL.');
+        $this->assertStringNotContainsString(($model->getRefreshToken()), $json, 'Stringified access token model should not contain refresh token.');
     }
 }

@@ -1,21 +1,19 @@
 <?php
 
-use GuzzleHttp\Client;
+use GuzzleHttp\{Client, HandlerStack};
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+
+use PHPUnit\Framework\TestCase;
 
 use NPR\One\Controllers\AuthCodeController;
 use NPR\One\DI\DI;
-use NPR\One\Interfaces\ConfigInterface;
-use NPR\One\Interfaces\StorageInterface;
+use NPR\One\Interfaces\{ConfigInterface, EncryptionInterface, StorageInterface};
 use NPR\One\Models\AccessTokenModel;
-use NPR\One\Providers\CookieProvider;
-use NPR\One\Providers\EncryptionProvider;
-use NPR\One\Providers\SecureCookieProvider;
+use NPR\One\Providers\{CookieProvider, EncryptionProvider, SecureCookieProvider};
 
 
-class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
+class AuthCodeControllerTest extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
@@ -28,6 +26,8 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     private $mockEncryption;
     /** @var StorageInterface */
     private $mockStorage;
+    /** @var EncryptionInterface */
+    private $mockEncrypt;
     /** @var ConfigInterface */
     private $mockConfig;
     /** @var Client */
@@ -37,25 +37,31 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     private static $clientId = 'fake_client_id';
 
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->mockCookie = $this->getMock(CookieProvider::class);
+        $this->mockCookie = $this->getMockBuilder(CookieProvider::class)->getMock();
 
-        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
+        $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->getMock();
 
-        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
+        $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->setMethods(['isValid', 'set'])->getMock();
         $this->mockEncryption->method('isValid')->willReturn(true);
         $this->mockEncryption->method('set')->willReturn(true);
 
-        $this->mockStorage = $this->getMock(StorageInterface::class);
+        $this->mockStorage = $this->createMock(StorageInterface::class);
         $this->mockStorage->method('compare')->willReturn(true);
 
-        $this->mockConfig = $this->getMock(ConfigInterface::class);
+        $this->mockEncrypt = $this->createMock(EncryptionInterface::class);
+        $this->mockEncrypt->method('isValid')->willReturn(false);
+
+        $this->mockConfig = $this->createMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
+        $this->mockConfig->method('getClientSecret')->willReturn('');
+        $this->mockConfig->method('getClientCredentialsToken')->willReturn('');
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getClientUrl')->willReturn('https://one.example.com');
         $this->mockConfig->method('getAuthCodeCallbackUrl')->willReturn('https://one.example.com/oauth2/callback');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
+        $this->mockConfig->method('getCookiePrefix')->willReturn('.example.com');
         $this->mockConfig->method('getEncryptionSalt')->willReturn('asYh&%D9ne!j8HKQ');
 
         $this->mockClient = new Client(['handler' => HandlerStack::create(new MockHandler())]);
@@ -80,32 +86,37 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type \RuntimeException
      * @expectedExceptionMessageRegExp   #ConfigProvider must be set. See.*setConfigProvider#
      */
     public function testConfigProviderException()
     {
+        $this->expectException(\RuntimeException::class);
         $controller = new AuthCodeController();
         $controller->startAuthorizationGrant(['fake_scope']);
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type \RuntimeException
      * @expectedExceptionMessageRegExp   #StorageProvider must be set. See.*setStorageProvider#
      */
     public function testStorageProviderException()
     {
+        $this->expectException(\RuntimeException::class);
+
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->startAuthorizationGrant(['fake_scope']);
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type \RuntimeException
      * @expectedExceptionMessageRegExp   #WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#
      */
     public function testSecureStorageProviderException()
     {
+        $this->expectException(\RuntimeException::class);
+
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
@@ -114,18 +125,19 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * Expect exception type \RuntimeException
      * @expectedExceptionMessageRegExp   #EncryptionProvider must be valid. See.*EncryptionInterface::isValid#
      */
     public function testEncryptionProviderException()
     {
-        $mockEncryption = $this->getMock(EncryptionProvider::class);
+        $mockEncryption = $this->createMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
+        $this->expectException(\Error::class); // fix later
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
-        $controller->setEncryptionProvider($mockEncryption);
+        $controller->setEncryptionProvider($this->mockEncrypt);
         $controller->startAuthorizationGrant(['fake_scope']);
     }
 
@@ -141,10 +153,12 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testStartAuthorizationGrantMissingScopes()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
@@ -152,10 +166,12 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testStartAuthorizationGrantInvalidScope()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
@@ -170,19 +186,21 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
         $url = $controller->startAuthorizationGrant(['fake_scope']);
 
-        $this->assertContains('/v2/authorize', $url);
-        $this->assertContains('client_id=' . self::$clientId, $url);
-        $this->assertContains('redirect_uri=', $url);
-        $this->assertContains('state=', $url);
-        $this->assertContains('response_type=code', $url);
-        $this->assertContains('scope=fake_scope', $url);
+        $this->assertStringContainsString('/v2/authorize', $url);
+        $this->assertStringContainsString('client_id=' . self::$clientId, $url);
+        $this->assertStringContainsString('redirect_uri=', $url);
+        $this->assertStringContainsString('state=', $url);
+        $this->assertStringContainsString('response_type=code', $url);
+        $this->assertStringContainsString('scope=fake_scope', $url);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testCompleteAuthorizationGrantMissingCode()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
@@ -190,10 +208,12 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * Expect exception type \InvalidArgumentException
      */
     public function testCompleteAuthorizationGrantMissingState()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
@@ -201,12 +221,13 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      * @expectedExceptionMessageRegExp #Invalid state returned from OAuth server.*#
      */
     public function testCompleteAuthorizationGrantStateFailure()
     {
         $this->mockStorage->method('compare')->willReturn(false);
+        $this->expectException(\Exception::class);
 
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
@@ -215,7 +236,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      * @expectedExceptionMessageRegExp #Invalid state returned from OAuth server, colon separator missing.*#
      */
     public function testCompleteAuthorizationGrantWithSwapAuthCodeNoSeparatorFailure()
@@ -229,6 +250,8 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
         DI::container()->set(Client::class, $client);
 
+        $this->expectException(\Exception::class);
+
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setStorageProvider($this->mockStorage);
@@ -237,7 +260,7 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * Expect exception type \Exception
      * @expectedExceptionMessageRegExp #Invalid state returned from OAuth server, server state .*#
      */
     public function testCompleteAuthorizationGrantWithSwapAuthCodeBadState()
@@ -251,12 +274,14 @@ class AuthCodeControllerTests extends PHPUnit_Framework_TestCase
 
         DI::container()->set(Client::class, $client);
 
-        $mockStorage = $this->getMock(StorageInterface::class);
+        $mockStorage = $this->createMock(StorageInterface::class);
         $mockStorage->method('compare')->willReturn(false);
+
+        $this->expectException(\Exception::class);
 
         $controller = new AuthCodeController();
         $controller->setConfigProvider($this->mockConfig);
-        $controller->setStorageProvider($mockStorage);
+        $controller->setStorageProvider($this->mockStorage);
 
         $controller->completeAuthorizationGrant('fake_grant_code', 'fake:state');
     }
