@@ -2,6 +2,7 @@
 
 namespace NPR\One\Models;
 
+use JsonSerializable;
 
 /**
  * A thin abstraction to aide in transforming raw JSON into a model, yet allowing it to be re-encoded as JSON when
@@ -9,7 +10,7 @@ namespace NPR\One\Models;
  *
  * @package NPR\One\Models
  */
-abstract class JsonModel
+abstract class JsonModel implements JsonSerializable
 {
     /** @var \stdClass - the original json used to construct this model, useful for debugging
       * @internal */
@@ -28,6 +29,14 @@ abstract class JsonModel
         {
             throw new \Exception('Model cannot be json_decoded: ' . print_r($json, 1));
         }
+    }
+
+    /**
+     * JSON Serialize the original JSON object
+     */
+    public function jsonSerialize()
+    {
+        return $this->originalJsonObject;
     }
 
     /**
