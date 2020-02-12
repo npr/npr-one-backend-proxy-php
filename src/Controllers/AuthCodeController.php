@@ -92,11 +92,12 @@ class AuthCodeController extends AbstractOAuth2Controller
      *
      * @api
      * @param string[] $scopes
+     * @param string|null $email - This email address will be used to pre-populate the login page.
      * @return string
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function startAuthorizationGrant(array $scopes): string
+    public function startAuthorizationGrant(array $scopes, ?string $email=null): string
     {
         $this->ensureExternalProvidersExist();
 
@@ -107,7 +108,8 @@ class AuthCodeController extends AbstractOAuth2Controller
             'redirect_uri'  => $this->getConfigProvider()->getAuthCodeCallbackUrl(),
             'state'         => $this->generateOAuth2State(),
             'response_type' => 'code',
-            'scope'         => join(' ', $scopes)
+            'scope'         => join(' ', $scopes),
+            'email'         => $email,
         ];
 
         return $this->getConfigProvider()->getNprAuthorizationServiceHost() . '/v2/authorize?' . http_build_query($queryParams);
