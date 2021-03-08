@@ -30,7 +30,7 @@
         "email": "NPROneEnterprise@npr.org",
         "issues": "https://github.com/npr/npr-one-backend-proxy-php/issues",
         "source": "https://github.com/npr/npr-one-backend-proxy-php",
-        "docs": "https://github.com/npr/npr-one-backend-proxy-php/tree/master/docs#readme"
+        "docs": "https://github.com/npr/npr-one-backend-proxy-php/tree/main/docs#readme"
     },
     "config": {
         "preferred-install": "dist"
@@ -53,5 +53,5 @@
     },
     "scripts": {
         "test:unit": "./vendor/bin/phpunit tests/unit --verbose"
-      }
+    }
 }
