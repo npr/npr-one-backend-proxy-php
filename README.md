@@ -51,7 +51,7 @@ This project is designed to be executed in a server environment with [Apache HTT
 
 ### Prerequisites
 
-A recent version of [PHP](https://php.net/), equal to or greater than 7.2.0 is required.
+A recent version of [PHP](https://php.net/), equal to or greater than 7.3.0 is required.
 
 The default [EncryptionProvider](/src/Providers/EncryptionProvider.php) class provided in this package relies on the [OpenSSL](https://php.net/manual/en/book.openssl.php) extension. If OpenSSL is unavailable, the consumer has the option to implement a custom EncryptionProvider class that implements our [EncryptionInterface](/src/Interfaces/EncryptionInterface.php). (For more information, see the [EncryptionProvider](#encryptionprovider) section.)
 
