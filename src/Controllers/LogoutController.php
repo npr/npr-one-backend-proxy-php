@@ -80,7 +80,8 @@ class LogoutController extends AbstractOAuth2Controller
                 'Authorization' => 'Bearer ' . $this->getConfigProvider()->getClientCredentialsToken()
             ],
             'form_params' => array_merge([
-                'token' => $token
+                'token' => $token,
+                'prompt'=> 'login'
             ], $additionalParams)
         ]);
 
