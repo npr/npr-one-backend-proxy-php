@@ -107,6 +107,7 @@ class AuthCodeController extends AbstractOAuth2Controller
             'redirect_uri'  => $this->getConfigProvider()->getAuthCodeCallbackUrl(),
             'state'         => $this->generateOAuth2State(),
             'response_type' => 'code',
+            'prompt'        => 'login',
             'scope'         => join(' ', $scopes)
         ];
 
