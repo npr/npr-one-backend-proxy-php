@@ -185,7 +185,7 @@ Route::post('refresh', function ()
     return addCORSHeaders(response())->json($data)->setStatusCode($statusCode); // this route is meant to be called with AJAX/Fetch, so we're returning JSON
 });
 
-Route::get('logout', function ()
+Route::post('logout', function ()
 {
     $token = $_GET['token'];
 

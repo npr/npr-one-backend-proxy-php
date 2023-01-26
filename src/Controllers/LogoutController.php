@@ -81,7 +81,6 @@ class LogoutController extends AbstractOAuth2Controller
             ],
             'form_params' => array_merge([
                 'token' => $token,
-                'prompt'=> 'login'
             ], $additionalParams)
         ]);
 
