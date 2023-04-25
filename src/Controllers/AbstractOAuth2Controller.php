@@ -43,11 +43,13 @@ abstract class AbstractOAuth2Controller
      */
     public function __construct()
     {
-        if (isset($_SERVER['GEOIP_LATITUDE']) && isset($_SERVER['GEOIP_LONGITUDE']))
+        if (isset($_SERVER['GEOIP_LATITUDE']) && isset($_SERVER['GEOIP_LONGITUDE']) && isset($_SERVER['HTTP_CLIENT_IP']))
         {
             $this->headers = [
                 'X-Latitude'  => $_SERVER['GEOIP_LATITUDE'],
-                'X-Longitude' => $_SERVER['GEOIP_LONGITUDE']
+                'X-Longitude' => $_SERVER['GEOIP_LONGITUDE'],
+                'X-Forwarded-For' => $_SERVER['HTTP_CLIENT_IP']
+
             ];
         }
         $this->encryption = DI::container()->get(EncryptionProvider::class);
@@ -106,6 +108,23 @@ abstract class AbstractOAuth2Controller
         $this->encryption = $encryptionProvider;
         return $this;
     }
+
+     /**
+     * looks for a user's IP address 
+     *
+     * @return $this
+     */
+    public function getClientIP(){       
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)){
+               return  $_SERVER["HTTP_X_FORWARDED_FOR"];  
+        }else if (array_key_exists('REMOTE_ADDR', $_SERVER)) { 
+               return $_SERVER["REMOTE_ADDR"]; 
+        }else if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
+               return $_SERVER["HTTP_CLIENT_IP"]; 
+        } 
+   
+        return '';
+   }
 
     /**
      * Ensures that externally supplied providers are set
