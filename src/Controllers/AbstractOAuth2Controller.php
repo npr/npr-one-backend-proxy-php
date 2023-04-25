@@ -47,8 +47,7 @@ abstract class AbstractOAuth2Controller
         {
             $this->headers = [
                 'X-Latitude'  => $_SERVER['GEOIP_LATITUDE'],
-                'X-Longitude' => $_SERVER['GEOIP_LONGITUDE'],
-
+                'X-Longitude' => $_SERVER['GEOIP_LONGITUDE']
             ];
         }
         $clientIpAddress = $this->getClientIP();
