@@ -50,6 +50,8 @@ abstract class AbstractOAuth2Controller
                 'X-Longitude' => $_SERVER['GEOIP_LONGITUDE']
             ];
         }
+        $clientIpAddress = $this->getClientIP();
+        $this->headers['X-Forwarded-For'] = $clientIpAddress; 
         $this->encryption = DI::container()->get(EncryptionProvider::class);
         $this->secureStorage = DI::container()->get(SecureCookieProvider::class);
         $this->secureStorage->setEncryptionProvider($this->encryption);
@@ -106,6 +108,22 @@ abstract class AbstractOAuth2Controller
         $this->encryption = $encryptionProvider;
         return $this;
     }
+
+     /**
+     * looks for a user's IP address 
+     *
+     * @return string
+     */
+    public function getClientIP(){       
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)){
+               return  $_SERVER["HTTP_X_FORWARDED_FOR"];  
+        }else if (array_key_exists('REMOTE_ADDR', $_SERVER)) { 
+               return $_SERVER["REMOTE_ADDR"]; 
+        }else if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
+               return $_SERVER["HTTP_CLIENT_IP"]; 
+        } 
+        return '';
+   }
 
     /**
      * Ensures that externally supplied providers are set
