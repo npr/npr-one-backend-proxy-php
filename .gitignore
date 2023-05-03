@@ -49,7 +49,7 @@ crashlytics.properties
 crashlytics-build.properties
 
 ### Composer template
-# composer.phar
+composer.phar
 composer.lock
 vendor/
 

@@ -51,7 +51,7 @@ abstract class AbstractOAuth2Controller
             ];
         }
         if (!is_null($clientIpAddress = $this->getClientIP())) {
-            $this->headers['X-Forwarded-For'] = $clientIpAddress; 
+            $this->headers['X-Forwarded-For'] = $clientIpAddress;
         }
         $this->encryption = DI::container()->get(EncryptionProvider::class);
         $this->secureStorage = DI::container()->get(SecureCookieProvider::class);
@@ -111,22 +111,25 @@ abstract class AbstractOAuth2Controller
     }
 
     /**
-     * looks for a user's IP address 
+     * looks for a user's IP address
      *
      * @return string|null
      */
     public function getClientIP()
-    {   
-        if (array_key_exists('HTTP_X_REAL_IP', $_SERVER)) {
-               return $_SERVER["HTTP_X_REAL_IP"];  
-        } else if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
-               return $_SERVER["HTTP_X_FORWARDED_FOR"];  
-        } else if (array_key_exists('REMOTE_ADDR', $_SERVER)) { 
-               return $_SERVER["REMOTE_ADDR"]; 
-        } else if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
-               return $_SERVER["HTTP_CLIENT_IP"]; 
+    {
+        $potentialHeaders = [
+            'HTTP_X_REAL_IP', // nginx
+            'HTTP_X_FORWARDED_FOR',
+            'REMOTE_ADDR',
+            'HTTP_CLIENT_IP'
+        ];
+
+        foreach ($potentialHeaders as $header) {
+            if (!empty($value = $_SERVER[$header] ?? null)) {
+                return $value;
+            }
         }
-        
+
         return null;
    }
 
