@@ -24,9 +24,8 @@ abstract class AbstractOAuth2Controller
     /** @internal */
     const FIVE_YEARS = 157784760; // in seconds
 
-    /** @var string[]
-     * @internal */
-    private $headers = [];
+    /** @var string[] */
+    protected $headers = [];
     /** @var ConfigInterface
       * @internal */
     private $config;
