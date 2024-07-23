@@ -108,6 +108,8 @@ class AuthCodeController extends AbstractOAuth2Controller
         $queryParams = [
             'client_id'     => $this->getConfigProvider()->getClientId(),
             'redirect_uri'  => $this->getConfigProvider()->getAuthCodeCallbackUrl(),
+            // ID/Auth now expects return_uri instead of redirect_url. Both are present just in case.
+            'return_uri'    => $this->getConfigProvider()->getAuthCodeCallbackUrl(),
             'state'         => $this->generateOAuth2State(),
             'response_type' => 'code',
             'scope'         => join(' ', $scopes),
