@@ -1,19 +1,17 @@
 <?php
 
 use NPR\One\Providers\CookieProvider;
+use PHPUnit\Framework\TestCase;
 
-
-class CookieProviderTests extends PHPUnit_Framework_TestCase
+class CookieProviderTests extends TestCase
 {
     private static $domain = '.example.com';
     private static $keyPrefix = 'example_';
 
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetDomainWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new CookieProvider();
         $provider->setDomain(new \stdClass());
     }
@@ -22,32 +20,32 @@ class CookieProviderTests extends PHPUnit_Framework_TestCase
     {
         $provider = new CookieProvider();
         $provider->setDomain(self::$domain);
-
-        // nothing really to do here, just verifying that it doesn't throw an exception
+        $reflection = new \ReflectionClass($provider);
+        $prop = $reflection->getProperty('domain');
+        $prop->setAccessible(true);
+        $this->assertSame(self::$domain, $prop->getValue($provider), 'Domain should be stored internally');
     }
 
     public function testSetDomainWithEmptyArgument()
     {
         $provider = new CookieProvider();
         $provider->setDomain(null);
-
-        // nothing really to do here, just verifying that it doesn't throw an exception
+        $reflection = new \ReflectionClass($provider);
+        $prop = $reflection->getProperty('domain');
+        $prop->setAccessible(true);
+        $this->assertNull($prop->getValue($provider), 'Domain should be null when set to null');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetKeyPrefixWithEmptyArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new CookieProvider();
         $provider->setKeyPrefix(null);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetKeyPrefixWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new CookieProvider();
         $provider->setKeyPrefix(new \stdClass());
     }
@@ -56,7 +54,6 @@ class CookieProviderTests extends PHPUnit_Framework_TestCase
     {
         $provider = new CookieProvider();
         $provider->setKeyPrefix(self::$keyPrefix);
-
-        // nothing really to do here, just verifying that it doesn't throw an exception
+        $this->assertSame(self::$keyPrefix, $provider->keyPrefix, 'Key prefix should be updated');
     }
 }

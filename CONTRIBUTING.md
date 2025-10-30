@@ -45,9 +45,7 @@ If you would like to contribute to the development of this project, here is the 
 
 ### Getting Set Up
 
-This project uses [Composer](https://getcomposer.org/) and includes a composer.phar for convenience under `/bin`.
-
-- `bin/composer.phar install`: install all dependencies
+This project uses [Composer](https://getcomposer.org/).
 
 Additionally, we highly recommend doing your development with [Xdebug enabled](https://xdebug.org/docs/install), to allow you to take advantage of various features, such as automatic code coverage measurement.
 
@@ -74,17 +72,50 @@ XML files are also generated for reporting test results and coverage on a CI ser
 
 ### Generating Documentation
 
-We are using [phpDocumentor](http://www.phpdoc.org) paired with the [phpdoc-md](https://github.com/evert/phpdoc-md) plugin to generate documentation in Markdown based on the contents of our PHPDoc blocks. To generate or update the documentation, use:
+We generate API documentation using [phpDocumentor 3](https://www.phpdoc.org). By default it produces HTML output in the `docs` directory (configured via `phpdoc.xml`). If you also want Markdown versions for easier in-repo browsing or diffing, an optional conversion script is provided.
+
+To generate or update the HTML documentation:
 
 ```
 ./vendor/bin/phpdoc
-./vendor/bin/phpdocmd docs/structure.xml docs --index README.md
 ```
+
+This will populate (or refresh) the contents under `docs/`.
+
+To convert all generated HTML files to Markdown run:
+
+```
+php bin/doc-markdown.php docs docs/markdown
+```
+
+The converter (using `league/html-to-markdown`) will mirror the HTML directory tree under `docs/markdown` with `.md` files. You can omit the second argument to use the default output directory (`docs/markdown`).
+
+Notes:
+* The legacy `phpdocmd` pipeline has been removed; `structure.xml` is no longer produced.
+* Regenerate after code or docblock changes before opening a PR that updates docs.
+* Do not hand-edit generated files; instead edit source docblocks.
 
 ### Generating a Changelog
 
-This will generally only ever be done by a maintainer from within NPR, but just in case: We're using the [phly/changelog-generator](https://github.com/weierophinney/changelog_generator) package, and the CLI command is:
+Use the provided script to build a Markdown section from a GitHub milestone (milestone number, not title). Only maintainers normally run this.
+
+Example (prints to stdout):
 
 ```
-vendor/bin/changelog_generator.php -t githubAPItoken -u npr -r npr-one-backend-proxy-php -m 1 > CHANGELOG.md
+php bin/generate-changelog.php -m 1 --token=YOUR_TOKEN
 ```
+
+Common options (see `--help` for full list):
+* `-m/--milestone` (required) Milestone number.
+* `-t/--token`     GitHub token (or set `GITHUB_TOKEN` env instead of passing `--token`).
+* `-O/--output`    Write to file instead of stdout.
+* `--prepend`      Prepend to existing changelog file.
+
+Writing & prepending to `CHANGELOG.md` for milestone 1:
+
+```
+export GITHUB_TOKEN=YOUR_TOKEN
+php bin/generate-changelog.php -m 1 -O CHANGELOG.md --prepend
+```
+
+Run `php bin/generate-changelog.php --help` to see advanced flags (custom categories, comparison links, unreleased mode, etc.).

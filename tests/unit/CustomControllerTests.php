@@ -14,16 +14,23 @@ use NPR\One\Providers\EncryptionProvider;
 use NPR\One\Providers\SecureCookieProvider;
 
 
-class CustomControllerTests extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @noinspection PhpPossiblePolymorphicInvocationInspection
+ * @psalm-suppress InvalidArgument
+ * @phpstan-ignore-file
+ */
+class CustomControllerTests extends TestCase
 {
     const ACCESS_TOKEN_RESPONSE = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786,"refresh_token": "6KVn9BOhHhUFR1Yqi2T2pzpTWI9WIfakerefresh"}';
     const ACCESS_TOKEN_RESPONSE_2 = '{"access_token": "LT8gvVDyeKwQJVVf6xwKAWdK0bOik64faketoken","token_type": "Bearer","expires_in": 690448786}';
 
-    /** @var SecureCookieProvider */
+    /** @var SecureCookieProvider|\PHPUnit\Framework\MockObject\MockObject */
     private $mockSecureCookie;
-    /** @var EncryptionProvider */
+    /** @var EncryptionProvider|\PHPUnit\Framework\MockObject\MockObject */
     private $mockEncryption;
-    /** @var ConfigInterface */
+    /** @var ConfigInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $mockConfig;
     /** @var Client */
     private $mockClient;
@@ -32,15 +39,12 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
     private static $clientId = 'fake_client_id';
 
 
-    public function setUp()
+    protected function setUp(): void
     {
-        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
-
-        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
+        $this->mockSecureCookie = $this->createMock(SecureCookieProvider::class);
+        $this->mockEncryption = $this->createMock(EncryptionProvider::class);
         $this->mockEncryption->method('isValid')->willReturn(true);
-        $this->mockEncryption->method('set')->willReturn(true);
-
-        $this->mockConfig = $this->getMock(ConfigInterface::class);
+        $this->mockConfig = $this->createMock(ConfigInterface::class);
         $this->mockConfig->method('getClientId')->willReturn(self::$clientId);
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
@@ -53,34 +57,28 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         DI::container()->set(Client::class, $this->mockClient); // just in case
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #ConfigProvider must be set. See.*setConfigProvider#
-     */
-    public function testConfigProviderException()
+    public function testConfigProviderException(): void
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('#ConfigProvider must be set. See.*setConfigProvider#');
         $controller = new CustomController();
         $controller->issueAccessToken();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #SecureStorageProvider must be set. See.*setSecureStorageProvider#
-     */
-    public function testSecureStorageProviderException()
+    public function testSecureStorageProviderException(): void
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('#SecureStorageProvider must be set. See.*setSecureStorageProvider#');
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->issueAccessToken();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#
-     */
-    public function testSecureStorageProviderWarning()
+    public function testSecureStorageProviderWarning(): void
     {
-        $mockCookie = $this->getMock(CookieProvider::class);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('#WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#');
+        $mockCookie = $this->createMock(CookieProvider::class);
 
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
@@ -88,25 +86,21 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->issueAccessToken();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #EncryptionProvider must be set. See.*setEncryptionProvider#
-     */
-    public function testEncryptionProviderException()
+    public function testEncryptionProviderException(): void
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('#EncryptionProvider must be set. See.*setEncryptionProvider#');
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setSecureStorageProvider($this->mockSecureCookie);
         $controller->issueAccessToken();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #EncryptionProvider must be valid. See.*EncryptionInterface::isValid#
-     */
-    public function testEncryptionProviderInvalidException()
+    public function testEncryptionProviderInvalidException(): void
     {
-        $mockEncryption = $this->getMock(EncryptionProvider::class);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('#EncryptionProvider must be valid. See.*EncryptionInterface::isValid#');
+        $mockEncryption = $this->createMock(EncryptionProvider::class);
         $mockEncryption->method('isValid')->willReturn(false);
 
         $controller = new CustomController();
@@ -116,12 +110,10 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->issueAccessToken();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage   Must specify grant type
-     */
-    public function testBadIssueAccessTokenMissingGrantType()
+    public function testBadIssueAccessTokenMissingGrantType(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must specify grant type');
         $controller = new CustomController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->setSecureStorageProvider($this->mockSecureCookie);
@@ -129,11 +121,9 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->badIssueAccessToken();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testIssueAccessTokenWithApiError()
+    public function testIssueAccessTokenWithApiError(): void
     {
+        $this->expectException(\Exception::class);
         $mock = new MockHandler([
             new Response(500, [], ''),
         ]);
@@ -147,7 +137,7 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->issueAccessToken();
     }
 
-    public function testIssueAccessToken()
+    public function testIssueAccessToken(): void
     {
         $mock = new MockHandler([
             new Response(200, [], self::ACCESS_TOKEN_RESPONSE),
@@ -163,11 +153,11 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->setEncryptionProvider($this->mockEncryption);
         $accessToken = $controller->issueAccessToken();
 
-        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
-        $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, true));
+        $this->assertSame(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 
-    public function testIssueAccessTokenNoRefreshToken()
+    public function testIssueAccessTokenNoRefreshToken(): void
     {
         $mock = new MockHandler([
             new Response(200, [], self::ACCESS_TOKEN_RESPONSE_2),
@@ -183,8 +173,8 @@ class CustomControllerTests extends PHPUnit_Framework_TestCase
         $controller->setEncryptionProvider($this->mockEncryption);
         $accessToken = $controller->issueAccessToken();
 
-        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, 1));
-        $this->assertEquals(0, $mock->count(), 'Expected additional HTTP requests to be made');
+        $this->assertInstanceOf(AccessTokenModel::class, $accessToken, 'issueAccessToken response was not of type AccessTokenModel: ' . print_r($accessToken, true));
+        $this->assertSame(0, $mock->count(), 'Expected additional HTTP requests to be made');
     }
 }
 

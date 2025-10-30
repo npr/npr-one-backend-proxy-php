@@ -11,15 +11,22 @@ use NPR\One\Interfaces\ConfigInterface;
 use NPR\One\Providers\CookieProvider;
 use NPR\One\Providers\EncryptionProvider;
 use NPR\One\Providers\SecureCookieProvider;
+use NPR\One\Interfaces\EncryptionInterface;
+use NPR\One\Interfaces\StorageInterface;
+use PHPUnit\Framework\TestCase;
 
-
-class LogoutControllerTests extends PHPUnit_Framework_TestCase
+/**
+ * @noinspection PhpPossiblePolymorphicInvocationInspection
+ * @psalm-suppress InvalidArgument
+ * @phpstan-ignore-file
+ */
+class LogoutControllerTests extends TestCase
 {
-    /** @var SecureCookieProvider */
+    /** @var SecureCookieProvider|\PHPUnit\Framework\MockObject\MockObject */
     private $mockSecureCookie;
-    /** @var EncryptionProvider */
+    /** @var EncryptionProvider|\PHPUnit\Framework\MockObject\MockObject|EncryptionProvider */
     private $mockEncryption;
-    /** @var ConfigInterface */
+    /** @var ConfigInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $mockConfig;
     /** @var Client */
     private $mockClient;
@@ -32,15 +39,15 @@ class LogoutControllerTests extends PHPUnit_Framework_TestCase
     private static $clientCredentialsToken = 'rWlf1a84WB09R0H65D8Q6Mm8E3ttDWOKfakecc';
 
 
-    public function setUp()
+    protected function setUp(): void
     {
-        $this->mockSecureCookie = $this->getMock(SecureCookieProvider::class);
+        // Mock the secure cookie provider so setEncryptionProvider exists
+        $this->mockSecureCookie = $this->getMockBuilder(SecureCookieProvider::class)->disableOriginalConstructor()->getMock();
 
-        $this->mockEncryption = $this->getMock(EncryptionProvider::class);
-        $this->mockEncryption->method('isValid')->willReturn(true);
-        $this->mockEncryption->method('set')->willReturn(true);
-
-        $this->mockConfig = $this->getMock(ConfigInterface::class);
+    // Use a partial mock of the concrete provider so setSalt is available
+    $this->mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->onlyMethods(['isValid', 'encrypt', 'decrypt'])->getMock();
+    $this->mockEncryption->method('isValid')->willReturn(true);
+        $this->mockConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
         $this->mockConfig->method('getClientCredentialsToken')->willReturn(self::$clientCredentialsToken);
         $this->mockConfig->method('getNprAuthorizationServiceHost')->willReturn('https://authorization.api.npr.org');
         $this->mockConfig->method('getCookieDomain')->willReturn('.example.com');
@@ -53,23 +60,19 @@ class LogoutControllerTests extends PHPUnit_Framework_TestCase
         DI::container()->set(Client::class, $this->mockClient); // just in case
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #ConfigProvider must be set. See.*setConfigProvider#
-     */
     public function testConfigProviderException()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/ConfigProvider must be set.*setConfigProvider/');
         $controller = new LogoutController();
         $controller->deleteAccessAndRefreshTokens();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider.#
-     */
     public function testSecureStorageProviderException()
     {
-        $mockCookie = $this->getMock(CookieProvider::class);
+        $mockCookie = $this->getMockBuilder(CookieProvider::class)->disableOriginalConstructor()->getMock();
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/WARNING: It is strongly discouraged to use CookieProvider as your secure storage provider\./');
 
         $controller = new LogoutController();
         $controller->setConfigProvider($this->mockConfig);
@@ -77,14 +80,12 @@ class LogoutControllerTests extends PHPUnit_Framework_TestCase
         $controller->deleteAccessAndRefreshTokens();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp   #EncryptionProvider must be valid. See.*EncryptionInterface::isValid#
-     */
     public function testEncryptionProviderException()
     {
-        $mockEncryption = $this->getMock(EncryptionProvider::class);
-        $mockEncryption->method('isValid')->willReturn(false);
+    $mockEncryption = $this->getMockBuilder(EncryptionProvider::class)->onlyMethods(['isValid', 'encrypt', 'decrypt'])->getMock();
+    $mockEncryption->method('isValid')->willReturn(false);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/EncryptionProvider must be valid.*EncryptionInterface::isValid/');
 
         $controller = new LogoutController();
         $controller->setConfigProvider($this->mockConfig);
@@ -92,33 +93,27 @@ class LogoutControllerTests extends PHPUnit_Framework_TestCase
         $controller->deleteAccessAndRefreshTokens();
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage   Could not locate a token to revoke
-     */
     public function testDeleteAccessAndRefreshTokensMissingToken()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Could not locate a token to revoke');
         $controller = new LogoutController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->deleteAccessAndRefreshTokens();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage   Must specify token to be revoked
-     */
     public function testDeleteAccessAndRefreshTokensInvalidToken()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must specify token to be revoked');
         $controller = new LogoutController();
         $controller->setConfigProvider($this->mockConfig);
         $controller->deleteAccessAndRefreshTokens(new \stdClass());
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testDeleteAccessAndRefreshTokensWithApiError()
     {
+        $this->expectException(\Exception::class);
         $mock = new MockHandler([
             new Response(500, [], ''),
         ]);
@@ -162,7 +157,10 @@ class LogoutControllerTests extends PHPUnit_Framework_TestCase
 
         DI::container()->set(Client::class, $client);
 
-        $this->mockSecureCookie->method('get')->willReturn(self::$refreshToken);
+        $this->mockSecureCookie->expects($this->any())
+            ->method('get')
+            ->with('refresh_token')
+            ->willReturn(self::$refreshToken);
 
         $controller = new LogoutController();
         $controller->setConfigProvider($this->mockConfig);

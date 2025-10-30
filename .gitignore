@@ -49,13 +49,24 @@ crashlytics.properties
 crashlytics-build.properties
 
 ### Composer template
-# composer.phar
-composer.lock
+composer.phar
 vendor/
 
 # PHPUnit Results & Code Coverage
+.phpunit.result.cache
 test-results/
 
 # PHPDoc
 build/
-docs/structure.xml
+
+# phpDocumentor generated output (HTML assets)
+docs/index.html
+docs/classes/
+docs/css/
+docs/files/
+docs/graphs/
+docs/indices/
+docs/js/
+docs/namespaces/
+docs/packages/
+docs/reports/

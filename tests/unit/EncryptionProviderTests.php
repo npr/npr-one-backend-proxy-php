@@ -1,28 +1,24 @@
 <?php
 
 use NPR\One\Providers\EncryptionProvider;
+use PHPUnit\Framework\TestCase;
 
-
-class EncryptionProviderTests extends PHPUnit_Framework_TestCase
+class EncryptionProviderTests extends TestCase
 {
     private static $salt = 'I am a test salt';
     private static $salt2 = 'J=j<4\bL6Y_T!{="EeU@!Z5eEqe64Qv$<.9:eD/JHzv=puhj$`FNr5DBN"Ej';
 
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetSaltWithEmptyArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setSalt(null);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetSaltWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setSalt(new \stdClass());
     }
@@ -56,25 +52,19 @@ class EncryptionProviderTests extends PHPUnit_Framework_TestCase
         $this->assertTrue($result, 'EncryptionProvider should be considered valid since a salt has been provided');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testEncryptWithEmptyArgument()
     {
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
-
+        $this->expectException(\InvalidArgumentException::class);
         $provider->encrypt(null);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testEncryptWithArgumentOfWrongType()
     {
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
-
+        $this->expectException(\InvalidArgumentException::class);
         $provider->encrypt(new \stdClass());
     }
 
@@ -92,28 +82,22 @@ class EncryptionProviderTests extends PHPUnit_Framework_TestCase
 
         $encryptedText = $provider->encrypt($originalText);
 
-        $this->assertInternalType('string', $encryptedText, 'The encrypted value should be a string');
+        $this->assertIsString($encryptedText, 'The encrypted value should be a string');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDecryptWithEmptyArgument()
     {
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
-
+        $this->expectException(\InvalidArgumentException::class);
         $provider->decrypt(null);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDecryptWithArgumentOfWrongType()
     {
         $provider = new EncryptionProvider();
         $provider->setSalt(self::$salt);
-
+        $this->expectException(\InvalidArgumentException::class);
         $provider->decrypt(new \stdClass());
     }
 
@@ -171,34 +155,27 @@ class EncryptionProviderTests extends PHPUnit_Framework_TestCase
         $this->assertEquals($originalText, $decryptedText, 'Decrypted text should match original text');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetCipherMethodWithEmptyArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setCipherMethod(null);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetCipherMethodWithArgumentOfWrongType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setCipherMethod(new \stdClass());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetCipherMethodWithInvalidCipher()
     {
         if (!extension_loaded('openssl'))
         {
             $this->markTestSkipped('openssl is not loaded, so this test cannot be run');
         }
-
+        $this->expectException(\InvalidArgumentException::class);
         $provider = new EncryptionProvider();
         $provider->setCipherMethod('I-am-not-a-real-cipher');
     }
@@ -212,5 +189,9 @@ class EncryptionProviderTests extends PHPUnit_Framework_TestCase
 
         $provider = new EncryptionProvider();
         $provider->setCipherMethod('aes-128-cbc');
+        $reflection = new \ReflectionClass($provider);
+        $prop = $reflection->getProperty('cipherMethod');
+        $prop->setAccessible(true);
+        $this->assertSame('aes-128-cbc', $prop->getValue($provider), 'Cipher method should be updated');
     }
 }

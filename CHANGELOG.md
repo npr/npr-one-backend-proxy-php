@@ -1,22 +1,19 @@
-<a name="1.1.2"></a>
-# 1.1.2 (2016-08-08)
+## v3.0.0
 
-Added support for Coveralls
+- Milestone: [v3.0.0](https://github.com/npr/npr-one-backend-proxy-php/milestone/2)
 
-<a name="1.1.1"></a>
-# 1.1.1 (2016-08-08)
-
-Added support for Travis CI
-
-<a name="1.1.0"></a>
-# 1.1.0 (2016-08-04)
-
-Total issues resolved: **2**
-- [2: Add status text (reason phrase) to ApiException class](https://github.com/npr/npr-one-backend-proxy-php/issues/2)
-- [1: Add custom exception class for API errors](https://github.com/npr/npr-one-backend-proxy-php/issues/1)
+### Other
+- Add PHP-CS-Fixer with the Symfony2 coding standards (#8 by @xiehan) [help wanted, housekeeping, priority: medium]
+- Drop support for PHP 5.6 (#13 by @xiehan) [help wanted, housekeeping, priority: time-based]
+- Drop support for PHP 7.0 (#14 by @xiehan) [help wanted, housekeeping, priority: time-based]
+- Upgrade to PHP-DI v6.x (#15 by @xiehan) [help wanted, housekeeping, priority: medium]
 
 
-<a name="1.0.0"></a>
-# 1.0.0 (2016-07-08)
+## v1.1.0 - 2025-10-30
 
-Initial release.
+- Milestone: [v1.1.0](https://github.com/npr/npr-one-backend-proxy-php/milestone/1)
+
+### Added
+- Add custom exception class for API errors (#1 by @xiehan) [enhancement]
+- Add status text (reason phrase) to ApiException class (#2 by @xiehan) [enhancement]
+
